@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">VIDEO_SHARE_APP</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="home_menu_title">Home</string>
+    <string name="file_menu_title">Files</string>
+    <string name="upload_icon_title">Upload</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="rooms">Rooms</string>
+    <string name="login_your_account">Login Account</string>
+    <string name="enter_room_name">Enter room name</string>
+    <string name="file_selection">File Selection</string>
+    <string name="choose_file">Choose File</string>
+    <string name="file_upload_clipart">File Upload Clipart</string>
+    <string name="theme_icon">Theme Icon</string>
+    <string name="security_details">Security Details</string>
+    <string name="encryption">Encryption</string>
+    <string name="selected_file_placeholder">File : Selected File</string>
+    <string name="algorithm">Algorithm:</string>
+
+    <string-array name="algorithms">
+        <item>AES</item>
+        <item>RSA</item>
+    </string-array>
+
+    <string name="prompt_algorithm">Select a algorithm</string>
+    <string name="pass">Pass:</string>
+    <string name="enter_a_pass_key_for_encryption">Enter pass or key</string>
+    <string name="expiry">Expiry</string>
+    <string name="generate">Generate</string>
+</resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Take Input From User for Algorithm
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="20dp"
+    android:paddingHorizontal="20dp"
+    android:paddingBottom="20dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/algorithm"
+        android:textSize="14sp"
+        android:textColor="@color/textColor"
+        android:textStyle="bold" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:strokeColor="@color/textColor"
+        app:strokeWidth="1dp"
+        app:cardCornerRadius="8dp">
+
+        <Spinner
+            android:background="@color/backgroundColor"
+            android:dropDownVerticalOffset="40dp"
+            android:prompt="@string/prompt_algorithm"
+            android:spinnerMode="dropdown"
+            android:elevation="5dp"
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="5dp" />
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

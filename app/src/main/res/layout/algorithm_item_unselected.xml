@@ -1,0 +1,13 @@
+<!--
+   UI of UnSelected Item Of The Spinner(Dropdown)
+-->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item"
+    android:textColor="@color/lightTextColor"
+    android:textSize="14sp"
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="15dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+</TextView>

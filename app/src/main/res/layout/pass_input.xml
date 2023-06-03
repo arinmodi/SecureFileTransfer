@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="20dp"
+    android:paddingHorizontal="20dp"
+    android:paddingBottom="20dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_height="wrap_content"
+            android:text="@string/pass"
+            android:textSize="14sp"
+            android:textColor="@color/textColor"
+            android:textStyle="bold" />
+
+        <androidx.cardview.widget.CardView
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp"
+            app:cardBackgroundColor="@color/buttonColor1"
+            android:layout_weight="0.3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/generate">
+
+            <TextView
+                android:paddingVertical="5dp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/generate"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+        </androidx.cardview.widget.CardView>
+
+
+    </LinearLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:strokeColor="@color/textColor"
+        app:strokeWidth="1dp"
+        app:cardCornerRadius="8dp">
+
+        <EditText
+            android:textCursorDrawable="@drawable/cursor"
+            android:id="@+id/pass"
+            android:background="@color/backgroundColor"
+            android:minLines="2"
+            android:maxLines="5"
+            android:textSize="14sp"
+            android:textColor="@color/textColor"
+            android:hint="@string/enter_a_pass_key_for_encryption"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingVertical="7dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="5dp" />
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
