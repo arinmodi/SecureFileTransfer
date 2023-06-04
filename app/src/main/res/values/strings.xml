@@ -39,4 +39,10 @@
     <string name="generate">Generate</string>
     <string name="please_wait">Please Wait</string>
     <string name="file_is_encrypting">File is Encrypting</string>
+    <string name="file_demo_txt">File : Demo.txt</string>
+    <string name="search_key_789456123">Search Key : 789456123</string>
+    <string name="algorithm_aes_256">Algorithm : AES-256</string>
+    <string name="expiry_02_05_2023">Expiry : 02-05-2023</string>
+    <string name="pass_bubuwhi548454s">Pass : BUBUWHI548454S==</string>
+    <string name="no_files_found">No Files Found</string>
 </resources>

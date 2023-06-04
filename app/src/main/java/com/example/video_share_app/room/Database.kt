@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@androidx.room.Database(entities = [File::class], version = 1, exportSchema = false)
+@androidx.room.Database(entities = [File::class], version = 2, exportSchema = false)
 abstract class Database : RoomDatabase() {
 
     abstract fun getFileDao(): FileDao

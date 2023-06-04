@@ -38,6 +38,27 @@ class FileRepository (private val fileDao : FileDao) {
         }
     }
 
+    /**
+     * Delete file from fire store and storage
+     * searchKey : File(Doc) to be deleted from fire store
+     *
+     * @return Resource, Success or Error
+     */
+    suspend fun deleteFile(searchKey : String) : Resource<Any> {
+        return try {
+            val response = fileService.deleteFile(searchKey)
+            val result = response.body()
+
+            if (response.isSuccessful) {
+                Resource.Success(result!!)
+            } else {
+                Resource.Error(response.message())
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
     // insert entry in sqlite database
     suspend fun insert(file : File) : Resource<Any> {
         return try {
@@ -49,8 +70,13 @@ class FileRepository (private val fileDao : FileDao) {
     }
 
     // delete entry in sqlite database
-    suspend fun delete(file : File) {
-        fileDao.delete(file)
+    suspend fun delete(file : File) : Resource<Any> {
+        return try {
+            fileDao.delete(file)
+            Resource.Success("Success")
+        } catch(e : Exception) {
+            Resource.Error(e.message.toString())
+        }
     }
 
 }

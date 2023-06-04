@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "FilesInfo")
 
 class File(
+    @ColumnInfo("name") val name : String,
     @ColumnInfo("pass") val pass : String,
     @ColumnInfo("SearchKey") val searchKey : String,
     @ColumnInfo("Expiry") val expiry : String,

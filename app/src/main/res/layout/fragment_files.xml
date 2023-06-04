@@ -30,4 +30,29 @@
 
     </LinearLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/filesList"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:textColor="@color/lightTextColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_files_found"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed-medium" />
+
+
+    </LinearLayout>
+
 </LinearLayout>

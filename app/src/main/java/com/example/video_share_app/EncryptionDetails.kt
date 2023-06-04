@@ -89,7 +89,7 @@ class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener {
                 calendar.set(year, monthOfYear, dayOfMonth)
 
                 // Display the selected date
-                val formattedDate = SimpleDateFormat("dd/MM/yyyy",
+                val formattedDate = SimpleDateFormat("dd-MM-yyyy",
                     Locale.getDefault()).format(calendar.time)
                 date.text = formattedDate
             },
@@ -105,6 +105,7 @@ class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener {
         calendar.add(Calendar.DAY_OF_MONTH, 1)
         datePickerDialog.datePicker.minDate = calendar.time.time
         calendar.add(Calendar.DAY_OF_MONTH, 1)
+        calendar.add(Calendar.MONTH, 1)
 
         val year = calendar.get(Calendar.YEAR).toString()
         val month = calendar.get(Calendar.MONTH).toString()
@@ -159,7 +160,7 @@ class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener {
                     }
 
                     else -> {
-                        Log.i("Image Uploaded", "Loading...")
+                        Log.i("FIle Uploaded", "Loading...")
                     }
                 }
             }
@@ -184,8 +185,9 @@ class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener {
     private fun validation() {
         if (date.text.isNotEmpty() &&  pass.text.isNotEmpty())  {
             if (algorithmSelected.contains("AES")) {
-                encryptionViewModel.algo = "AES"
+                encryptionViewModel.algo = algorithmSelected
                 encryptionViewModel.pass = pass.text.toString()
+                encryptionViewModel.fileName = bundle?.getString("name")?: ""
                 try {
                     val path = bundle?.getString("path")
                     if (path != null) {
