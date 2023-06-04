@@ -12,12 +12,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.example.video_share_app.algorithms.AES
+import com.example.video_share_app.viewmodels.EncryptionViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
-import javax.crypto.spec.SecretKeySpec
+import androidx.lifecycle.lifecycleScope
+import com.example.video_share_app.utils.ProgressDialog
+import com.example.video_share_app.utils.ResponseDialog
 
-class EncryptionDetails : Fragment() {
+class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener {
 
     // file name view
     private lateinit var fileName : TextView
@@ -35,14 +39,26 @@ class EncryptionDetails : Fragment() {
 
     private var bundle: Bundle? = null
 
-    // date Picker
+    // date Picker view
     private lateinit var datePickerDialog : DatePickerDialog
 
     // generate pass view
     private lateinit var generate : CardView
 
+    // progress dialog view
+    private lateinit var progressDialog: ProgressDialog
+
+    // response dialog
+    private lateinit var responseDialog : ResponseDialog
+
+    private lateinit var encryptionViewModel : EncryptionViewModel
+
+    private var algorithmSelected = "AES-128"
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        encryptionViewModel = EncryptionViewModel(requireActivity().application)
 
         bundle = arguments
 
@@ -61,6 +77,7 @@ class EncryptionDetails : Fragment() {
             adapter.setDropDownViewResource(R.layout.algorithm_item_unselected)
             spinner.adapter = adapter
         }
+        spinner.onItemSelectedListener = this
 
         // pass view related
         pass = view.findViewById(R.id.pass)
@@ -107,6 +124,46 @@ class EncryptionDetails : Fragment() {
         generate.setOnClickListener {
             generatePass()
         }
+
+        // progress dialog related
+        progressDialog = ProgressDialog(requireActivity())
+
+        // response dialog related
+        responseDialog = ResponseDialog(requireActivity())
+
+        lifecycleScope.launchWhenCreated {
+            encryptionViewModel.storeEvent.observe(viewLifecycleOwner) {
+                when (it) {
+                    is EncryptionViewModel.MainEvent.Success -> {
+                        // file uploaded and stored, hide progress dialog and show success dialog
+                        responseDialog.showDialog()
+                        progressDialog.dismiss()
+                        responseDialog.setButtonText("OK")
+                        responseDialog.setMsg("File Encrypted...")
+                        responseDialog.setImage(ContextCompat.getDrawable(requireContext(),
+                            R.drawable.success))
+                        Toast.makeText(requireContext(), "File Uploaded & Stored",
+                            Toast.LENGTH_LONG).show()
+                    }
+
+                    is EncryptionViewModel.MainEvent.Failure -> {
+                        // error occurred, hide progress dialog and show error dialog
+                        responseDialog.showDialog()
+                        progressDialog.dismiss()
+                        responseDialog.setButtonText("Try Again")
+                        responseDialog.setMsg("Something Bad Happen")
+                        responseDialog.setImage(ContextCompat.getDrawable(requireContext(),
+                            R.drawable.error))
+                        Toast.makeText(requireContext(), "File Not Uploaded. Try Again",
+                            Toast.LENGTH_LONG).show()
+                    }
+
+                    else -> {
+                        Log.i("Image Uploaded", "Loading...")
+                    }
+                }
+            }
+        }
     }
 
     private fun openDateDialog() {
@@ -126,22 +183,30 @@ class EncryptionDetails : Fragment() {
     /* validate input */
     private fun validation() {
         if (date.text.isNotEmpty() &&  pass.text.isNotEmpty())  {
-            try {
-                val path = bundle?.getString("path")
-                if (path != null) {
-                    val secretKey = AES.stringToSecretKey(pass.text.toString())
-                    val encodedFile =
-                        AES.encryptFile(
-                            context=requireContext(),
-                            filePath = Uri.parse(path),
-                            secretKey = secretKey,
-                            fileName = bundle?.getString("name")?:""
-                        )
+            if (algorithmSelected.contains("AES")) {
+                encryptionViewModel.algo = "AES"
+                encryptionViewModel.pass = pass.text.toString()
+                try {
+                    val path = bundle?.getString("path")
+                    if (path != null) {
+                        val secretKey = AES.stringToSecretKey(pass.text.toString())
+                        val encodedFile =
+                            AES.encryptFile(
+                                context = requireContext(),
+                                filePath = Uri.parse(path),
+                                secretKey = secretKey,
+                                fileName = bundle?.getString("name") ?: ""
+                            )
+                        progressDialog.showDialog()
+                        encryptionViewModel.uploadImage(encodedFile, date.text.toString())
+                    }
+                } catch (e: Exception) {
+                    Log.e("E : ", e.toString())
+                    Toast.makeText(
+                        requireContext(), "Something Bad Happen! Try Again...",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
-            } catch (e : Exception) {
-                Log.e("E : ", e.toString())
-                Toast.makeText(requireContext(), "Something Bad Happen! Try Again...",
-                    Toast.LENGTH_LONG).show()
             }
         } else {
             Toast.makeText(requireContext(), "Please Enter Proper Details",
@@ -151,7 +216,16 @@ class EncryptionDetails : Fragment() {
 
     /* generate key according to algorithm */
     private fun generatePass() {
-        val key = AES.secretKeyToString(AES.generateSecretKey(128))
-        pass.setText(key)
+        if (algorithmSelected.contains("AES")) {
+            val keySize = (algorithmSelected.split("-")[1]).toInt()
+            val key = AES.secretKeyToString(AES.generateSecretKey(keySize))
+            pass.setText(key)
+        }
     }
+
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        algorithmSelected = resources.getStringArray(R.array.algorithms)[p2]
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {}
 }

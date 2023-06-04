@@ -16,6 +16,7 @@ dependencyResolutionManagement {
         maven {
             url "https://www.bouncycastle.org/maven2"
         }
+        jcenter()
     }
 }
 rootProject.name = "VIDEO_SHARE_APP"

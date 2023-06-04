@@ -27,8 +27,9 @@
     <string name="algorithm">Algorithm:</string>
 
     <string-array name="algorithms">
-        <item>AES</item>
-        <item>RSA</item>
+        <item>AES-128</item>
+        <item>AES-192</item>
+        <item>AES-256</item>
     </string-array>
 
     <string name="prompt_algorithm">Select a algorithm</string>
@@ -36,4 +37,6 @@
     <string name="enter_a_pass_key_for_encryption">Enter pass or key</string>
     <string name="expiry">Expiry</string>
     <string name="generate">Generate</string>
+    <string name="please_wait">Please Wait</string>
+    <string name="file_is_encrypting">File is Encrypting</string>
 </resources>
