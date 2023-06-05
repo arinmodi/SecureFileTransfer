@@ -202,9 +202,14 @@ class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener {
                                 fileName = bundle?.getString("name") ?: "",
                                 iv = randomIV
                             )
-                        progressDialog.showDialog()
-                        val iv = Base64.getEncoder().encodeToString(randomIV)
-                        encryptionViewModel.uploadImage(encodedFile, date.text.toString(), iv)
+                        if (encodedFile == null) {
+                            Toast.makeText(context, "Unsupported file format", Toast.LENGTH_LONG)
+                                .show()
+                        } else {
+                            progressDialog.showDialog()
+                            val iv = Base64.getEncoder().encodeToString(randomIV)
+                            encryptionViewModel.uploadImage(encodedFile, date.text.toString(), iv)
+                        }
                     }
                 } catch (e: Exception) {
                     Log.e("E : ", e.toString())

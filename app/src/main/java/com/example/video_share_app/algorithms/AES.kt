@@ -78,22 +78,19 @@ class AES {
          * @return the content of file in form of ByteArray
          * */
         private fun readFile(context : Context,uri: Uri) : ByteArray {
-            val stringBuilder = StringBuilder()
-            try {
-                val inputStream = context.contentResolver.openInputStream(uri)
-                val reader = BufferedReader(InputStreamReader(inputStream))
-                var line: String? = reader.readLine()
-                while (line != null) {
-                    stringBuilder.append(line)
-                    stringBuilder.append("\n")
-                    line = reader.readLine()
-                }
-                reader.close()
-                inputStream?.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
+            val contentResolver = context.contentResolver
+            val inputStream = contentResolver.openInputStream(uri)
+            val bufferedInputStream = BufferedInputStream(inputStream)
+            val byteArrayOutputStream = ByteArrayOutputStream()
+
+            val buffer = ByteArray(1024)
+            var bytesRead: Int
+
+            while (bufferedInputStream.read(buffer).also { bytesRead = it } != -1) {
+                byteArrayOutputStream.write(buffer, 0, bytesRead)
             }
-            return stringBuilder.toString().toByteArray()
+
+            return byteArrayOutputStream.toByteArray()
          }
 
         /**
@@ -133,8 +130,8 @@ class AES {
          * @return String indicating the encrypted data
          */
         fun encryptFile(context: Context, filePath: Uri, secretKey: SecretKey, fileName: String,
-                        iv : ByteArray) : File {
-            return if (fileName.contains(".txt")) {
+                        iv : ByteArray) : File? {
+            return if (fileName.contains(".txt") || fileName.contains(".pdf")) {
                 val fileData = readFile(context, filePath)
 
                 val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
@@ -143,8 +140,12 @@ class AES {
                 val encryptedData = cipher.doFinal(fileData)
 
                 writeByteArrayToFile(context, encryptedData, fileName)
-            } else {
-                File("demo")
+            } else if (fileName.contains(".jpg") || fileName.contains(".png")
+                || fileName.contains(".mp3") || fileName.contains(".png")
+                || fileName.contains(".mp4")) {
+                return encryptMediaFile(context, filePath, fileName, secretKey, iv)
+            }else {
+                null
             }
         }
 
@@ -156,7 +157,10 @@ class AES {
         fun decryptFile(context:Context, url : String, secretKey: SecretKey, fileName: String,
                         iv : ByteArray) : File? {
 
-            if (fileName.contains(".txt")) {
+            if (fileName.contains(".txt") ||
+                    fileName.contains(".jpeg") || fileName.contains(".jpg")
+                || fileName.contains(".png") || fileName.contains(".mp4")
+                || fileName.contains(".mp3") || fileName.contains(".pdf")) {
                 val encryptedData = readRemoteFile(url)
 
                 return if (encryptedData != null) {
@@ -176,8 +180,8 @@ class AES {
                 } else {
                     null
                 }
-            } else {
-                return File("Demo")
+            }else {
+                return null
             }
         }
 
@@ -195,13 +199,17 @@ class AES {
             return file
         }
 
-        fun encryptMediaFile(context: Context, inputUri: Uri, outputFileName: String, secretKey: SecretKey,
-                             iv: ByteArray) : File {
+        /**
+         * function for encrypting media files,
+         * supported media files : .mp3, .mp4, .jpg, .png, .jpeg
+         */
+        private fun encryptMediaFile(context: Context, inputUri: Uri, outputFileName: String, secretKey: SecretKey,
+                                     iv: ByteArray) : File {
             val inputStream = context.contentResolver.openInputStream(inputUri)
             val file = File(context.filesDir, outputFileName)
             val outputStream = FileOutputStream(file)
 
-            val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
+            val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(iv))
 
             val cipherOutputStream = CipherOutputStream(outputStream, cipher)
@@ -213,23 +221,6 @@ class AES {
             }
 
             return file
-        }
-
-        fun decryptMediaFile(context: Context, inputFileName: String, outputUri: Uri, secretKey: SecretKey,
-                             iv: ByteArray) {
-            val inputStream = FileInputStream(File(context.filesDir, inputFileName))
-            val outputStream = context.contentResolver.openOutputStream(outputUri)
-
-            val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
-
-            val cipherInputStream = CipherInputStream(inputStream, cipher)
-
-            outputStream?.use { output ->
-                cipherInputStream.use { input ->
-                    input.copyTo(output)
-                }
-            }
         }
     }
 }

@@ -68,13 +68,25 @@ class UploadFragment : Fragment() {
                 val uri : Uri = data.data as Uri
                 val cursor = requireContext().contentResolver.query(uri, null, null, null, null)
                 val nameIndex = cursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                val sizeIndex = cursor?.getColumnIndex(OpenableColumns.SIZE)
                 cursor?.moveToFirst()
                 fileName = if (nameIndex == null) {
                     ""
                 } else {
                     cursor.getString(nameIndex)
                 }
+                val size = if (sizeIndex == null) {
+                    0
+                } else {
+                    cursor.getLong(sizeIndex)
+                }
+                val sizeInMB = size/1024/1024
                 filePath = uri.toString()
+                if (sizeInMB >= 11) {
+                    Toast.makeText(requireContext(), "Sorry! Currently, we don't support large files", Toast.LENGTH_LONG).show()
+                    filePath = ""
+                    fileName = ""
+                }
                 displayName()
             } else {
                 Toast.makeText(requireContext(), "Something Bad Happen!", Toast.LENGTH_LONG).show()
