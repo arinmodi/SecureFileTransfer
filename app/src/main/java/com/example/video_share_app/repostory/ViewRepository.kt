@@ -7,6 +7,9 @@ import com.example.video_share_app.model.FileResponse
 import com.example.video_share_app.retrofit.GetFileService
 import com.example.video_share_app.retrofit.RetrofitService
 
+/**
+ * Repository for, Get file from Remote Source
+ */
 class ViewRepository {
 
     private val getFileService = RetrofitService.getInstance().create(GetFileService::class.java)

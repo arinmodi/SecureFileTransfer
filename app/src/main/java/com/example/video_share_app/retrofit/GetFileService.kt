@@ -7,6 +7,10 @@ import retrofit2.http.Query
 
 interface GetFileService {
 
+    /**
+     * Get File API
+     * @searchKey : refers to search key of file (id of doc in firebase)
+     */
     @GET("/get/file")
     suspend fun getFile(@Query("searchKey") searchKey : String) : Response<FileResponse>
 

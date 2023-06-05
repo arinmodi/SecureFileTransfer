@@ -24,7 +24,7 @@ abstract class Database : RoomDatabase() {
                     context.applicationContext,
                     Database::class.java,
                     "file_database"
-                ).build()
+                ).addCallback(FileDatabaseCallBack(context)).build()
                 INSTANCE = instance
                 instance
             }

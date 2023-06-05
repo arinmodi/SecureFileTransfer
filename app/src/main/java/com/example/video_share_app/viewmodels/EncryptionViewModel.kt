@@ -25,8 +25,6 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
 
 
     private val mainEventMutable = MutableLiveData<MainEvent>()
-    val mainEvent: LiveData<MainEvent>
-        get() = mainEventMutable
 
     private val storeEventMutable = MutableLiveData<MainEvent>()
     val storeEvent : LiveData<MainEvent>
@@ -41,7 +39,6 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
     sealed class MainEvent {
         class Success(val jsonObject: Any) : MainEvent()
         class Failure(val m: String) : MainEvent()
-        object Empty : MainEvent()
         object Loading : MainEvent()
     }
 
@@ -96,7 +93,9 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
         val json = JSONObject(data)
 
         val date = json.getString("expiry").split("-")
+        Log.e("Date : ", json.getString("expiry"))
         val expiry = date[2] + "-" + date[1] + "-" + date[0]
+        Log.e("Expiry : ", expiry)
 
 
         val encryptedFile = com.example.video_share_app.room.File(

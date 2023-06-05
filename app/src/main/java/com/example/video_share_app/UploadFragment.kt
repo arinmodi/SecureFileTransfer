@@ -2,12 +2,9 @@ package com.example.video_share_app
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.provider.OpenableColumns
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,104 +16,47 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.example.video_share_app.utils.PermissionsUtil
-import java.io.ByteArrayInputStream
-import java.io.File
 
+/**
+ * Upload Fragment, User select the file to share
+ */
 class UploadFragment : Fragment() {
 
-    // file selection button
-    private lateinit var selectButton : CardView
+    /**
+     * UI Views
+     */
+    private lateinit var selectButton: CardView
+    private lateinit var fileNameView: TextView
+    private lateinit var nextButton: CardView
+    private lateinit var themeButton: ImageView
 
-    // selected file name UI
-    private lateinit var  fileNameView : TextView
+    /**
+     * Refers to selected file name
+     */
+    private var fileName: String = ""
 
-    // next button
-    private lateinit var nextButton : CardView
+    /**
+     * Refers to selected file path
+     */
+    private lateinit var filePath: String
 
-    // theme button
-    private lateinit var themeButton : ImageView
-
-    // selected file name
-    private var fileName : String = ""
-
-    //selected file path
-    private lateinit var filePath : String
-
-    // refers to status of theme
+    /**
+     * Refers to mode of the app
+     */
     private var isDarkMode = false
 
-
-    // permission launcher
-    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts
-        .RequestPermission())
-    { isGranted: Boolean ->
+    /**
+     * Read External Storage Permission Launcher
+     */
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts
+            .RequestPermission()
+    ) { isGranted: Boolean ->
         if (isGranted) {
             sendFileSelectionIntent()
         } else {
             Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show()
         }
-    }
-
-    // file selection launcher
-    private val requestFileLauncher = registerForActivityResult(ActivityResultContracts
-        .StartActivityForResult()) {
-        val code = it.resultCode
-        val data = it.data
-
-        if (code == Activity.RESULT_OK) {
-            if (data != null) {
-                val uri : Uri = data.data as Uri
-                val cursor = requireContext().contentResolver.query(uri, null, null, null, null)
-                val nameIndex = cursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                val sizeIndex = cursor?.getColumnIndex(OpenableColumns.SIZE)
-                cursor?.moveToFirst()
-                fileName = if (nameIndex == null) {
-                    ""
-                } else {
-                    cursor.getString(nameIndex)
-                }
-                val size = if (sizeIndex == null) {
-                    0
-                } else {
-                    cursor.getLong(sizeIndex)
-                }
-                val sizeInMB = size/1024/1024
-                filePath = uri.toString()
-                if (sizeInMB >= 11) {
-                    Toast.makeText(requireContext(), "Sorry! Currently, we don't support large files", Toast.LENGTH_LONG).show()
-                    filePath = ""
-                    fileName = ""
-                }
-                displayName()
-            } else {
-                Toast.makeText(requireContext(), "Something Bad Happen!", Toast.LENGTH_LONG).show()
-            }
-        } else {
-            Toast.makeText(requireContext(), "Something Bad Happen!", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        selectButton = view.findViewById(R.id.selectButton)
-        selectButton.setOnClickListener { fileSelection() }
-
-        fileNameView = view.findViewById(R.id.filename)
-
-        nextButton = view.findViewById(R.id.next)
-        nextButton.setOnClickListener { next() }
-
-        themeButton = view.findViewById(R.id.theme)
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        isDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        if (isDarkMode) {
-            themeButton.setImageResource(R.drawable.light_mode_24)
-        } else {
-            themeButton.setImageResource(R.drawable.dark_mode)
-        }
-        themeButton.setOnClickListener { setTheme() }
-
     }
 
     override fun onCreateView(
@@ -126,7 +66,75 @@ class UploadFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_upload, container, false)
     }
 
-    // file selection button click handler
+    /**
+     * show toast message
+     */
+    private fun showToast(msg: String) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+    }
+
+    /**
+     * File Selection Launcher
+     */
+    private val requestFileLauncher = registerForActivityResult(
+        ActivityResultContracts
+            .StartActivityForResult()
+    ) {
+        val code = it.resultCode
+        val data = it.data
+
+        if (code == Activity.RESULT_OK) {
+            if (data != null) {
+                val uri: Uri = data.data as Uri
+                val cursor = requireContext().contentResolver.query(
+                    uri, null, null, null, null)
+                val nameIndex = cursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                val sizeIndex = cursor?.getColumnIndex(OpenableColumns.SIZE)
+                cursor?.moveToFirst()
+                val size = if (sizeIndex == null) { 0 } else { cursor.getLong(sizeIndex) }
+                val sizeInMB = size / 1024 / 1024
+
+                fileName = if (nameIndex == null) { "" } else { cursor.getString(nameIndex) }
+                filePath = uri.toString()
+
+                if (sizeInMB >= 11) {
+                    filePath = ""
+                    fileName = ""
+                    showToast("Sorry! Currently, we don't support large files")
+                }
+
+                displayName()
+            } else {
+                showToast("Something Bad Happen!")
+            }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        isDarkMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+
+        // ui assignments
+        selectButton = view.findViewById(R.id.selectButton)
+        fileNameView = view.findViewById(R.id.filename)
+        nextButton = view.findViewById(R.id.next)
+        themeButton = view.findViewById(R.id.theme)
+
+        if (isDarkMode) {
+            themeButton.setImageResource(R.drawable.light_mode_24)
+        } else {
+            themeButton.setImageResource(R.drawable.dark_mode)
+        }
+
+        selectButton.setOnClickListener { fileSelection() }
+        nextButton.setOnClickListener { next() }
+        themeButton.setOnClickListener { setTheme() }
+    }
+
+    /**
+     * Invokes when user click on Select File Button
+     */
     private fun fileSelection() {
         if (PermissionsUtil.isStorageReadPermission(requireContext())) {
             sendFileSelectionIntent()
@@ -135,39 +143,53 @@ class UploadFragment : Fragment() {
         }
     }
 
-    // launch storage file pick intent
+    /**
+     * Open File Manager To Select File
+     */
     private fun sendFileSelectionIntent() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "*/*"
         requestFileLauncher.launch(intent)
     }
 
-    // display filename
+    /**
+     * Display Selected File Name to View
+     */
     private fun displayName() {
         fileNameView.text = fileName
     }
 
-    // next button click handler
+    /**
+     * Invokes when user clicks on next button,
+     * Open Encryption Detail Fragment
+     */
     private fun next() {
         if (fileName.isEmpty()) {
-            Toast.makeText(requireContext(), "Please Select A File First!", Toast.LENGTH_LONG).show()
-        } else {
-            val detailsFrag = EncryptionDetails()
-            val fileBundle = Bundle()
-            fileBundle.putString("name", fileName)
-            fileBundle.putString("path", filePath)
-            detailsFrag.arguments = fileBundle
-            val activity = activity as MainActivity
-            activity.loadFragment(detailsFrag)
+            showToast("Please Select A File First!")
+            return
         }
+
+        val detailsFrag = EncryptionDetails()
+        val fileBundle = Bundle()
+        fileBundle.putString("name", fileName)
+        fileBundle.putString("path", filePath)
+        detailsFrag.arguments = fileBundle
+        val activity = activity as MainActivity
+        activity.loadFragment(detailsFrag)
     }
 
-    // change the theme
+    /**
+     * Invokes when user clicks on theme icon
+     */
     private fun setTheme() {
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            requireActivity().supportFragmentManager.popBackStack()
+            requireActivity().recreate()
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            requireActivity().supportFragmentManager.popBackStack()
+            requireActivity().recreate()
         }
     }
 }

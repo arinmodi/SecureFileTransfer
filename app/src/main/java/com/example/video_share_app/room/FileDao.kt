@@ -3,6 +3,10 @@ package com.example.video_share_app.room
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
+/**
+ * Dao class for operating with
+ * SQLite DB(room)
+ */
 @Dao
 interface FileDao {
 
@@ -14,7 +18,8 @@ interface FileDao {
     @Delete
     suspend fun delete(file : File)
 
-    @Query("Select * from FilesInfo order by id DESC")
-    fun getAllFiles(): LiveData<List<File>>
+    // get all data from local DB(SQLite)
+    @Query("Select * from FilesInfo where Expiry > (:Expiry) order by id DESC")
+    fun getAllFiles(Expiry : String): LiveData<List<File>>
 
 }

@@ -54,4 +54,24 @@
     <string name="unlock_the_file">Unlock the file</string>
     <string name="decryption">Decryption</string>
     <string name="paste">Paste</string>
+
+    <string-array name="nonMediaFiles">
+        <item>.txt</item>
+        <item>.pdf</item>
+        <item>.docx</item>
+        <item>.xlsx</item>
+        <item>.xls</item>
+        <item>.pptx</item>
+        <item>.ppt</item>
+        <item>.zip</item>
+        <item>.rar</item>
+    </string-array>
+
+    <string-array name="mediaFiles">
+        <item>.jpg</item>
+        <item>.png</item>
+        <item>.mp3</item>
+        <item>.mp4</item>
+        <item>.jpeg</item>
+    </string-array>
 </resources>

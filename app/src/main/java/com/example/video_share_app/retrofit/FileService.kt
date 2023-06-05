@@ -19,6 +19,7 @@ interface FileService {
      * Upload File API
      * @file : file to be uploaded
      * @expiry : Expiry of the file
+     * @iv : IV used for Encryption for AES(CBC)
      */
     @Multipart
     @POST(value = "/upload/file")
@@ -26,6 +27,10 @@ interface FileService {
                             @Part("expiry") expiry : RequestBody,
                             @Part("iv") iv : RequestBody): Response<Any>
 
+    /**
+     * Delete File API
+     * @searchKey : refers to search key of file (id of doc in firebase)
+     */
     @FormUrlEncoded
     @POST("/delete/file")
     suspend fun deleteFile(@Field("searchKey") searchKey : String) : Response<Any>

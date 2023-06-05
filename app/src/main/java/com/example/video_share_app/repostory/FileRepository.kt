@@ -8,13 +8,20 @@ import com.example.video_share_app.room.FileDao
 import com.example.video_share_app.utils.Resource
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import java.text.SimpleDateFormat
+import java.util.*
 
+/**
+ * Repository for, UploadFile to Remote Source
+ * Insert, Delete, Get from SQLite(Room) DB
+ */
 class FileRepository (private val fileDao : FileDao) {
 
     private val fileService : FileService = RetrofitService
         .getInstance().create(FileService::class.java)
 
-    val allFiles : LiveData<List<File>> = fileDao.getAllFiles()
+    val allFiles : LiveData<List<File>> = fileDao.getAllFiles(
+        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()).toString())
 
     /**
      * Upload file to firebase and store mapping in fire-store

@@ -3,6 +3,9 @@ package com.example.video_share_app.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Response From GET Request
+ */
 data class FileResponse(
     @SerializedName("url")
     @Expose

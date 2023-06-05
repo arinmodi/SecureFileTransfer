@@ -1,5 +1,6 @@
 package com.example.video_share_app.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,18 +12,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.video_share_app.R
 import com.example.video_share_app.room.File
 
-interface DeleteClickListener {
+/**
+ * listener for delete button listener and copy button listener
+ * in FileFragment
+ */
+interface FileClickListener {
     fun onDeleteClick(file : File)
-}
-
-interface CopyClickListener {
     fun onCopyClick(file : File)
 }
 
 class FileAdapters(
     val context : Context,
-    private val deleteClickListener: DeleteClickListener,
-    private val copyClickListener: CopyClickListener
+    private val fileClickListener: FileClickListener,
 ) : RecyclerView.Adapter<FileAdapters.ViewHolder>(){
 
     private val allFiles = ArrayList<File>()
@@ -50,23 +51,24 @@ class FileAdapters(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         // on below line we are setting data to item of recycler view.
         val fileName = "File : " + allFiles[position].name
-        holder.fileNameView.text = fileName
         val searchKey = "Search Key : " + allFiles[position].searchKey
-        holder.searchKeyView.text = searchKey
         val date = allFiles[position].expiry.split("-")
         val finalDate = "Expiry : ${date[2]}-${date[1]}-${date[0]}"
-        holder.expiryView.text = finalDate
         val pass = "Pass : " + allFiles[position].pass
-        holder.passView.text = pass
         val algo = "Algorithm : " + allFiles[position].algo
+
+        holder.fileNameView.text = fileName
+        holder.searchKeyView.text = searchKey
+        holder.expiryView.text = finalDate
+        holder.passView.text = pass
         holder.algorithmView.text = algo
 
         holder.deleteButton.setOnClickListener {
-            deleteClickListener.onDeleteClick(allFiles[position])
+            fileClickListener.onDeleteClick(allFiles[position])
         }
 
         holder.copyButton.setOnClickListener {
-            copyClickListener.onCopyClick(allFiles[position])
+            fileClickListener.onCopyClick(allFiles[position])
         }
     }
 
@@ -74,7 +76,10 @@ class FileAdapters(
         return allFiles.size
     }
 
-    // below method is use to update our list of notes.
+    /**
+     * Update the files list
+     */
+    @SuppressLint("NotifyDataSetChanged")
     fun updateList(newList: List<File>) {
         allFiles.clear()
         allFiles.addAll(newList)

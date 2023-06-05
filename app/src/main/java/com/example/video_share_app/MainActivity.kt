@@ -1,21 +1,26 @@
 package com.example.video_share_app
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.video_share_app.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView.OnItemSelectedListener
+import java.text.SimpleDateFormat
+import java.util.*
 
+/**
+ * Starting Point
+ */
 class MainActivity : AppCompatActivity(), OnItemSelectedListener {
-
-    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
+
+        Log.e("Today : ", SimpleDateFormat("yyyy-MM-dd",
+            Locale.getDefault()).format(Date()).toString())
 
         loadFragment(UploadFragment())
 
@@ -26,7 +31,7 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener {
 
      fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().replace(R.id.relativelayout, fragment).commit()
-    }
+     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.title) {

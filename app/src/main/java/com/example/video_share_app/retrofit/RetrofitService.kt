@@ -5,9 +5,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitService {
 
+    /**
+     * Base API Url
+     */
     private const val BASE_URL = "http://192.168.0.104:5000"
 
-    //Create the Retrofit Instance
     fun getInstance(): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)

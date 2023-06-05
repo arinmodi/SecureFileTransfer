@@ -16,28 +16,47 @@ import com.example.video_share_app.model.FileResponse
 import com.example.video_share_app.utils.ProgressDialog
 import com.example.video_share_app.viewmodels.ViewFileViewModel
 
+/**
+ * Search the file
+ */
 class ViewFile : Fragment() {
 
-    // search key edit text
+    /**
+     * View Of the screen
+     */
     private lateinit var searchInput : EditText
-
-    // search button
     private lateinit var searchButton : CardView
-
-    // message, search result
     private lateinit var message : TextView
-
-    // view file button
     private lateinit var viewFile : CardView
 
+    /**
+     * Dialog
+     */
+    private lateinit var progressDialog: ProgressDialog
+
+    /**
+     * ViewFile Model, for observing the GET API response
+     */
     private lateinit var viewFileViewModel : ViewFileViewModel
 
+    /**
+     * Refers to search result
+     */
     private var fr : FileResponse? = null
 
-    private lateinit var progressDialog: ProgressDialog
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_view_file, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        progressDialog = ProgressDialog(requireActivity())
+        viewFileViewModel = ViewFileViewModel(requireActivity().application)
 
         searchInput = view.findViewById(R.id.searchKey)
         searchButton = view.findViewById(R.id.search)
@@ -46,10 +65,6 @@ class ViewFile : Fragment() {
 
         message.text = getString(R.string.no_files_found)
         viewFile.visibility = View.INVISIBLE
-
-        progressDialog = ProgressDialog(requireActivity())
-
-        viewFileViewModel = ViewFileViewModel(requireActivity().application)
 
         searchButton.setOnClickListener {
             Log.e("Button Pressed", "true")
@@ -62,28 +77,24 @@ class ViewFile : Fragment() {
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewFileViewModel.fileLive.observe(viewLifecycleOwner) {
-                if (it == null) {
-                    fr = null
-                    message.text = getString(R.string.no_files_found)
-                    viewFile.visibility = View.INVISIBLE
-                    progressDialog.dismiss()
-                } else {
-                    progressDialog.dismiss()
-                    fr = it
-                    val msg = it.name + " found"
-                    message.text = msg
-                    viewFile.visibility = View.VISIBLE
-                }
-            }
-        }
-
         viewFile.setOnClickListener {
             onViewFile()
         }
+
+        lifecycleScope.launchWhenCreated {
+            viewFileViewModel.fileLive.observe(viewLifecycleOwner) {
+                if (it == null) {
+                    onNoDataFound()
+                } else {
+                    onFileFound(it)
+                }
+            }
+        }
     }
 
+    /**
+     * Invokes when user click on view file button
+     */
     private fun onViewFile() {
         if (fr != null) {
             val intent = Intent(context, DecryptionDetails::class.java)
@@ -94,11 +105,30 @@ class ViewFile : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_view_file, container, false)
+    /**
+     * Invokes when searched key not able
+     * to locate the file,
+     *
+     * Update UI
+     */
+    private fun onNoDataFound() {
+        fr = null
+        message.text = getString(R.string.no_files_found)
+        viewFile.visibility = View.INVISIBLE
+        progressDialog.dismiss()
+    }
+
+    /**
+     * Invokes when searched key
+     * locate the file,
+     *
+     * Update UI
+     */
+    private fun onFileFound(it : FileResponse) {
+        progressDialog.dismiss()
+        fr = it
+        val msg = it.name + " found"
+        message.text = msg
+        viewFile.visibility = View.VISIBLE
     }
 }

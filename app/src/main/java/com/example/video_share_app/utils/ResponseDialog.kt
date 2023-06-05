@@ -13,9 +13,14 @@ import com.example.video_share_app.MainActivity
 import com.example.video_share_app.R
 import com.example.video_share_app.UploadFragment
 
-class ResponseDialog(activity: Activity) {
+interface ButtonClickListener {
+    fun onResponseDialogButtonClick()
+}
+
+class ResponseDialog(activity: Activity, buttonClickListener: ButtonClickListener) {
     private var activity : Activity
     private var alertDialog: AlertDialog? = null
+    private var buttonClickListener : ButtonClickListener? = null
 
     private var image : ImageView? = null
     private var message : TextView? = null
@@ -23,6 +28,7 @@ class ResponseDialog(activity: Activity) {
 
     init {
         this.activity = activity
+        this.buttonClickListener = buttonClickListener
     }
 
     @SuppressLint("InflateParams")
@@ -41,8 +47,7 @@ class ResponseDialog(activity: Activity) {
         buttonText = alertDialog?.findViewById(R.id.buttonText)
 
         alertDialog?.findViewById<CardView>(R.id.button)?.setOnClickListener {
-            (activity as MainActivity).loadFragment(UploadFragment())
-            dismiss()
+            buttonClickListener?.onResponseDialogButtonClick()
         }
 
     }

@@ -8,6 +8,9 @@ import android.graphics.drawable.ColorDrawable
 import android.widget.TextView
 import com.example.video_share_app.R
 
+/**
+ * Loading Dialog
+ */
 class ProgressDialog(activity : Activity) {
     private var activity : Activity
     private var alertDialog: AlertDialog? = null
@@ -32,6 +35,9 @@ class ProgressDialog(activity : Activity) {
         message = alertDialog?.findViewById(R.id.text2)
     }
 
+    /**
+     * Set the message to display to users
+     */
     fun setMessage(msg : String) {
         message?.text = msg
     }
