@@ -194,20 +194,17 @@ class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener {
                     if (path != null) {
                         val secretKey = AES.stringToSecretKey(pass.text.toString())
                         val randomIV = AES.generateRandomIV()
-                        val name = bundle?.getString("name") ?: ""
-                        if (name.contains(".txt")) {
-                            val encodedFile =
-                                AES.encryptFile(
-                                    context = requireContext(),
-                                    filePath = Uri.parse(path),
-                                    secretKey = secretKey,
-                                    fileName = bundle?.getString("name") ?: "",
-                                    iv = randomIV
-                                )
-                            progressDialog.showDialog()
-                            val iv = Base64.getEncoder().encodeToString(randomIV)
-                            encryptionViewModel.uploadImage(encodedFile, date.text.toString(), iv)
-                        }
+                        val encodedFile =
+                            AES.encryptFile(
+                                context = requireContext(),
+                                filePath = Uri.parse(path),
+                                secretKey = secretKey,
+                                fileName = bundle?.getString("name") ?: "",
+                                iv = randomIV
+                            )
+                        progressDialog.showDialog()
+                        val iv = Base64.getEncoder().encodeToString(randomIV)
+                        encryptionViewModel.uploadImage(encodedFile, date.text.toString(), iv)
                     }
                 } catch (e: Exception) {
                     Log.e("E : ", e.toString())

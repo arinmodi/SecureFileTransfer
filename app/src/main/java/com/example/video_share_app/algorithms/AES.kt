@@ -134,14 +134,18 @@ class AES {
          */
         fun encryptFile(context: Context, filePath: Uri, secretKey: SecretKey, fileName: String,
                         iv : ByteArray) : File {
-            val fileData = readFile(context, filePath)
+            return if (fileName.contains(".txt")) {
+                val fileData = readFile(context, filePath)
 
-            val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(iv))
+                val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+                cipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(iv))
 
-            val encryptedData = cipher.doFinal(fileData)
+                val encryptedData = cipher.doFinal(fileData)
 
-            return writeByteArrayToFile(context, encryptedData, fileName)
+                writeByteArrayToFile(context, encryptedData, fileName)
+            } else {
+                File("demo")
+            }
         }
 
         /**
@@ -151,39 +155,30 @@ class AES {
          */
         fun decryptFile(context:Context, url : String, secretKey: SecretKey, fileName: String,
                         iv : ByteArray) : File? {
-            val encryptedData = readRemoteFile(url)
 
-            return if (encryptedData != null) {
-                try {
-                    Log.e("File Name : ", fileName)
-                    val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-                    cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
+            if (fileName.contains(".txt")) {
+                val encryptedData = readRemoteFile(url)
 
-                    val decryptedData = cipher.doFinal(encryptedData)
+                return if (encryptedData != null) {
+                    try {
+                        Log.e("File Name : ", fileName)
+                        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+                        cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
 
-                    writeByteArrayToFileWithoutEncoding(context, decryptedData, fileName)
-                }catch(e : Exception) {
-                    Log.e("Error : ", "Decryption")
-                    e.printStackTrace()
-                    return null
+                        val decryptedData = cipher.doFinal(encryptedData)
+
+                        writeByteArrayToFile(context, decryptedData, fileName)
+                    } catch (e: Exception) {
+                        Log.e("Error : ", "Decryption")
+                        e.printStackTrace()
+                        return null
+                    }
+                } else {
+                    null
                 }
             } else {
-                null
+                return File("Demo")
             }
-        }
-
-        private fun writeByteArrayToFileWithoutEncoding(context: Context, byteArray: ByteArray, fileName: String) : File {
-            val file = File(context.filesDir, fileName)
-
-            try {
-                val outputStream = FileOutputStream(file)
-                outputStream.write(byteArray)
-                outputStream.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-            return file;
         }
 
         private fun writeByteArrayToFile(context: Context, byteArray: ByteArray, fileName: String) : File {

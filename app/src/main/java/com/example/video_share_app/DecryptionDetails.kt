@@ -101,16 +101,22 @@ class DecryptionDetails : AppCompatActivity(), OnItemSelectedListener {
     private fun onViewFile(fileName : String, url : String, iv : String) {
         if (pass.text.isNotEmpty()) {
             if (algorithmSelected.contains("AES")) {
-                if (PermissionsUtil.isStorageWritePermission(this)) {
-                    val secretKey = AES.stringToSecretKey(pass.text.toString())
-                    try {
-                        NetworkTask().doInBackground(this, secretKey, url, fileName, iv)
-                    } catch (e: Exception) {
-                        Log.e("Decryption Error : ", e.toString())
+                val secretKey = AES.stringToSecretKey(pass.text.toString())
+                val requiredSize = secretKey.encoded.size * 8
+                val selectedSize = algorithmSelected.split("-")[1].toInt()
+                if (requiredSize == selectedSize) {
+                    if (PermissionsUtil.isStorageWritePermission(this)) {
+                        try {
+                            NetworkTask().doInBackground(this, secretKey, url, fileName, iv)
+                        } catch (e: Exception) {
+                            Log.e("Decryption Error : ", e.toString())
+                        }
+                    } else {
+                        requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     }
                 } else {
-                    requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                }
+                    Toast.makeText(this, "Mismatch algorithm and key",
+                        Toast.LENGTH_LONG).show()                }
             }
         } else {
             Toast.makeText(this, "Please Enter Proper Details",
@@ -160,7 +166,9 @@ class DecryptionDetails : AppCompatActivity(), OnItemSelectedListener {
                                         .show()
                                 }
                             }else {
-                                file.copyTo(targetFile)
+                                if (!targetFile.exists()) {
+                                    file.copyTo(targetFile)
+                                }
                                 Toast.makeText(context, "File Saved!", Toast.LENGTH_LONG)
                                     .show()
                             }
