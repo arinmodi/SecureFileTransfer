@@ -23,9 +23,9 @@ class FileRepository (private val fileDao : FileDao) {
      *
      * @return Resource, Success or Error
      */
-    suspend fun uploadFile(file:MultipartBody.Part,expiry:RequestBody) : Resource<Any> {
+    suspend fun uploadFile(file:MultipartBody.Part,expiry:RequestBody, iv : RequestBody) : Resource<Any> {
         return try {
-            val response = fileService.uploadImage(file,expiry)
+            val response = fileService.uploadImage(file,expiry, iv)
             val result = response.body()
 
             if (response.isSuccessful) {

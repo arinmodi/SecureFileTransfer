@@ -39,6 +39,11 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener {
                 loadFragment(UploadFragment())
                 return true
             }
+
+            getString(R.string.view) -> {
+                loadFragment(ViewFile())
+                return true
+            }
         }
 
         return false

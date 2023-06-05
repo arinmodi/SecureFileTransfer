@@ -7,6 +7,12 @@
         android:icon="@drawable/upload_icon_light" />
 
     <item
+        android:id="@+id/view"
+        android:title="@string/view"
+        android:icon="@drawable/view"
+        android:checked="false" />
+
+    <item
         android:checked="false"
         android:id="@+id/file"
         android:title="@string/file_menu_title"

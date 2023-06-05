@@ -11,5 +11,10 @@ open class PermissionsUtil {
             return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) ==
                     PackageManager.PERMISSION_GRANTED
         }
+
+        fun isStorageWritePermission(context : Context) : Boolean {
+            return ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                    PackageManager.PERMISSION_GRANTED
+        }
     }
 }

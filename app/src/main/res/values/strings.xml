@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VIDEO_SHARE_APP</string>
+    <string name="app_name">Secure Share</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -45,4 +45,13 @@
     <string name="expiry_02_05_2023">Expiry : 02-05-2023</string>
     <string name="pass_bubuwhi548454s">Pass : BUBUWHI548454S==</string>
     <string name="no_files_found">No Files Found</string>
+    <string name="view">View</string>
+    <string name="view_file">View File</string>
+    <string name="search_key">Search Key :</string>
+    <string name="enter_a_search_key">Enter a Search Key</string>
+    <string name="search_results">Search Results...</string>
+    <string name="image_jpeg_found">image.jpeg found</string>
+    <string name="unlock_the_file">Unlock the file</string>
+    <string name="decryption">Decryption</string>
+    <string name="paste">Paste</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.example.video_share_app
 
-import android.R.attr.label
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context

@@ -52,7 +52,7 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     // upload image function
-    fun uploadImage(file: File, expiry : String) {
+    fun uploadImage(file: File, expiry : String, iv : String) {
         mainEventMutable.value = MainEvent.Loading
         storeEventMutable.value = MainEvent.Loading
 
@@ -68,17 +68,16 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
             )
 
         val reqBody = getMultiPartFormRequestBody(expiry)
-
+        val reqBody2 = getMultiPartFormRequestBody(iv)
 
         viewModelScope.launch {
 
-            when (val response = fileRepository?.uploadFile(profileImageBody, reqBody)) {
-
+            when (val response = fileRepository?.uploadFile(profileImageBody, reqBody,
+                reqBody2)) {
                 is Resource.Success -> {
                     mainEventMutable.value = MainEvent.Success(response.data!!)
                     saveInfo()
                 }
-
 
                 is Resource.Error -> {
                     mainEventMutable.value = MainEvent.Failure(response.message!!)

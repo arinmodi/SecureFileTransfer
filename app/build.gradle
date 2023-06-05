@@ -73,4 +73,7 @@ dependencies {
 
     //spin kit for loader
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+
+    // for pdf file
+    implementation 'org.apache.pdfbox:pdfbox:2.0.27'
 }

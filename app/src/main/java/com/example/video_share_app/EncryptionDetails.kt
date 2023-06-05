@@ -20,6 +20,7 @@ import java.util.Locale
 import androidx.lifecycle.lifecycleScope
 import com.example.video_share_app.utils.ProgressDialog
 import com.example.video_share_app.utils.ResponseDialog
+import java.util.Base64
 
 class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener {
 
@@ -192,15 +193,21 @@ class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener {
                     val path = bundle?.getString("path")
                     if (path != null) {
                         val secretKey = AES.stringToSecretKey(pass.text.toString())
-                        val encodedFile =
-                            AES.encryptFile(
-                                context = requireContext(),
-                                filePath = Uri.parse(path),
-                                secretKey = secretKey,
-                                fileName = bundle?.getString("name") ?: ""
-                            )
-                        progressDialog.showDialog()
-                        encryptionViewModel.uploadImage(encodedFile, date.text.toString())
+                        val randomIV = AES.generateRandomIV()
+                        val name = bundle?.getString("name") ?: ""
+                        if (name.contains(".txt")) {
+                            val encodedFile =
+                                AES.encryptFile(
+                                    context = requireContext(),
+                                    filePath = Uri.parse(path),
+                                    secretKey = secretKey,
+                                    fileName = bundle?.getString("name") ?: "",
+                                    iv = randomIV
+                                )
+                            progressDialog.showDialog()
+                            val iv = Base64.getEncoder().encodeToString(randomIV)
+                            encryptionViewModel.uploadImage(encodedFile, date.text.toString(), iv)
+                        }
                     }
                 } catch (e: Exception) {
                     Log.e("E : ", e.toString())
