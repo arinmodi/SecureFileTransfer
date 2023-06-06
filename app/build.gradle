@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.video_share_app'
+    namespace 'com.genz.secure_share'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.video_share_app"
+        applicationId "com.genz.secure_share"
         minSdk 26
         targetSdk 33
         versionCode 1
