@@ -78,7 +78,6 @@ class AES {
                 val decodedKey = Base64.getDecoder().decode(keyString)
                 SecretKeySpec(decodedKey, 0, decodedKey.size, "AES")
             } catch(e : Exception) {
-                Log.e("Error : ", "String to Secret")
                 e.printStackTrace()
                 null
             }
