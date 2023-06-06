@@ -14,7 +14,9 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.genz.secure_share.utils.PermissionsUtil
 
 /**
@@ -29,6 +31,11 @@ class UploadFragment : Fragment() {
     private lateinit var fileNameView: TextView
     private lateinit var nextButton: CardView
     private lateinit var themeButton: ImageView
+
+    /**
+     * No Internet Dialog
+     */
+    private lateinit var noInternet: NoInternet
 
     /**
      * Refers to selected file name
@@ -113,6 +120,7 @@ class UploadFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        noInternet = NoInternet(requireActivity())
         isDarkMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
         // ui assignments
@@ -130,6 +138,16 @@ class UploadFragment : Fragment() {
         selectButton.setOnClickListener { fileSelection() }
         nextButton.setOnClickListener { next() }
         themeButton.setOnClickListener { setTheme() }
+
+        lifecycleScope.launchWhenCreated {
+            (requireActivity() as MainActivity).networkState.observe(viewLifecycleOwner) {
+                if (it) {
+                    noInternet.dismiss()
+                } else {
+                    noInternet.show()
+                }
+            }
+        }
     }
 
     /**

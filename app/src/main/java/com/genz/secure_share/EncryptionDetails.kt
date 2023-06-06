@@ -46,6 +46,7 @@ class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener, Button
     private lateinit var datePickerDialog: DatePickerDialog
     private lateinit var progressDialog: ProgressDialog
     private lateinit var responseDialog: ResponseDialog
+    private lateinit var noInternet: NoInternet
 
     /**
      * Calender Instance
@@ -155,6 +156,7 @@ class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener, Button
 
         progressDialog = ProgressDialog(requireActivity())
         responseDialog = ResponseDialog(requireActivity(), this)
+        noInternet = NoInternet(requireActivity())
 
         // ui assignments
         val nextButton = view.findViewById<CardView>(R.id.nextButton)
@@ -208,6 +210,14 @@ class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener, Button
                     else -> {
                         Log.i("FIle Uploaded", "Loading...")
                     }
+                }
+            }
+
+            (requireActivity() as MainActivity).networkState.observe(viewLifecycleOwner) {
+                if (it) {
+                    noInternet.dismiss()
+                } else {
+                    noInternet.show()
                 }
             }
         }

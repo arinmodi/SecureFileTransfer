@@ -30,7 +30,12 @@ class ViewFile : Fragment() {
     private lateinit var viewFile : CardView
 
     /**
-     * Dialog
+     * No Internet Dialog
+     */
+    private lateinit var noInternet: NoInternet
+
+    /**
+     * Progress Dialog
      */
     private lateinit var progressDialog: ProgressDialog
 
@@ -55,8 +60,10 @@ class ViewFile : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        progressDialog = ProgressDialog(requireActivity())
         viewFileViewModel = ViewFileViewModel(requireActivity().application)
+
+        noInternet = NoInternet(requireActivity())
+        progressDialog = ProgressDialog(requireActivity())
 
         searchInput = view.findViewById(R.id.searchKey)
         searchButton = view.findViewById(R.id.search)
@@ -87,6 +94,14 @@ class ViewFile : Fragment() {
                     onNoDataFound()
                 } else {
                     onFileFound(it)
+                }
+            }
+
+            (requireActivity() as MainActivity).networkState.observe(viewLifecycleOwner) {
+                if (it) {
+                    noInternet.dismiss()
+                } else {
+                    noInternet.show()
                 }
             }
         }

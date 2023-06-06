@@ -34,7 +34,12 @@ class FilesFragment : Fragment(), FileClickListener {
     private lateinit var noData: LinearLayout
 
     /**
-     * Dialogs
+     * No Internet Dialog
+     */
+    private lateinit var noInternet: NoInternet
+
+    /**
+     * Progress Dialogs
      */
     private lateinit var progressDialog: ProgressDialog
 
@@ -57,6 +62,8 @@ class FilesFragment : Fragment(), FileClickListener {
         val fileAdapters = FileAdapters(requireContext(), this)
 
         fileViewModel = EncryptionViewModel(requireActivity().application)
+
+        noInternet = NoInternet(requireActivity())
         progressDialog = ProgressDialog(requireActivity())
 
         listView = view.findViewById(R.id.filesList)
@@ -83,6 +90,7 @@ class FilesFragment : Fragment(), FileClickListener {
         }
 
         lifecycleScope.launchWhenCreated {
+            // observer delete event
             fileViewModel.storeEvent.observe(viewLifecycleOwner) {
                 when (it) {
                     is EncryptionViewModel.MainEvent.Success -> {
@@ -101,6 +109,15 @@ class FilesFragment : Fragment(), FileClickListener {
                     else -> {
                         Log.i("Status : ", "Loading")
                     }
+                }
+            }
+
+            // observe network state chnage
+            (requireActivity() as MainActivity).networkState.observe(viewLifecycleOwner) {
+                if (it) {
+                    noInternet.dismiss()
+                } else {
+                    noInternet.show()
                 }
             }
         }

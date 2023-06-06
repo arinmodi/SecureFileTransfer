@@ -16,4 +16,7 @@
     <color name="iconColor">#FFFFFFFF</color>
     <color name="buttonColor1">#2D8030</color>
     <color name="lightTextColor">#B6B2B2</color>
+
+    <color name="red_light">#FF7777</color>
+    <color name="splashBackground">#000000</color>
 </resources>

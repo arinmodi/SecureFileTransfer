@@ -17,4 +17,7 @@
     <color name="buttonColor1">#2D8030</color>
     <color name="buttonColor2">#364BC1</color>
     <color name="lightTextColor">#302E2E</color>
+
+    <color name="red_light">#FF7777</color>
+    <color name="splashBackground">#FFFFFF</color>
 </resources>
