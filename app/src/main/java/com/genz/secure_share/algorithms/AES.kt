@@ -4,13 +4,10 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.genz.secure_share.R
-import java.io.BufferedInputStream
-import java.io.ByteArrayOutputStream
+import com.genz.secure_share.utils.FilesUtil
+import com.genz.secure_share.utils.NetworkCalls
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
 import java.security.SecureRandom
 import java.util.*
 import javax.crypto.Cipher
@@ -84,80 +81,6 @@ class AES {
         }
 
         /**
-         * read file using uri
-         *
-         * @uri : Uri of the file to be read
-         * @context : context of the activity it will be always MainActivity
-         * @return the content of file in form of ByteArray
-         * */
-        private fun readFile(context : Context,uri: Uri) : ByteArray {
-            val contentResolver = context.contentResolver
-            val inputStream = contentResolver.openInputStream(uri)
-            val bufferedInputStream = BufferedInputStream(inputStream)
-            val byteArrayOutputStream = ByteArrayOutputStream()
-
-            val buffer = ByteArray(1024)
-            var bytesRead: Int
-
-            while (bufferedInputStream.read(buffer).also { bytesRead = it } != -1) {
-                byteArrayOutputStream.write(buffer, 0, bytesRead)
-            }
-
-            return byteArrayOutputStream.toByteArray()
-         }
-
-        /**
-         * Read the data from remote file
-         *
-         * @url : url of the file to be read
-         * @return the content of the file in form of ByteArray
-         */
-        private fun readRemoteFile(urlString : String) : ByteArray? {
-            try {
-                val url = URL(urlString)
-                val connection = url.openConnection() as HttpURLConnection
-
-                val inputStream = BufferedInputStream(connection.inputStream)
-                val byteArrayOutputStream = ByteArrayOutputStream()
-
-                val buffer = ByteArray(1024)
-                var bytesRead: Int
-
-                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                    byteArrayOutputStream.write(buffer, 0, bytesRead)
-                }
-
-                val encodedData = byteArrayOutputStream.toByteArray()
-                inputStream.close()
-                byteArrayOutputStream.close()
-
-                return encodedData
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-            return null
-        }
-
-        /**
-         * Write Data to file
-         */
-        private fun writeByteArrayToFile(context: Context, byteArray: ByteArray,
-                                         fileName: String) : File {
-            val file = File(context.filesDir, fileName)
-
-            try {
-                val outputStream = FileOutputStream(file)
-                outputStream.write(byteArray)
-                outputStream.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-            return file
-        }
-
-        /**
          * Encrypt the File
          *
          * @context : context of the activity (Always MainActivity)
@@ -177,14 +100,14 @@ class AES {
                 return if (context.resources.getStringArray(R.array.nonMediaFiles)
                         .contains(extension)
                 ) {
-                    val fileData = readFile(context, filePath)
+                    val fileData = FilesUtil.readFile(context, filePath)
 
                     val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
                     cipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(iv))
 
                     val encryptedData = cipher.doFinal(fileData)
 
-                    writeByteArrayToFile(context, encryptedData, fileName)
+                    FilesUtil.writeByteArrayToFile(context, encryptedData, fileName)
                 } else if (context.resources.getStringArray(R.array.mediaFiles)
                         .contains(extension)
                 ) {
@@ -242,7 +165,7 @@ class AES {
             Log.e("Extension", extension)
             if (context.resources.getStringArray(R.array.nonMediaFiles).contains(extension)
                 || context.resources.getStringArray(R.array.mediaFiles).contains(extension)) {
-                val encryptedData = readRemoteFile(url)
+                val encryptedData = NetworkCalls.readRemoteFile(url)
 
                 return if (encryptedData != null) {
                     try {
@@ -252,7 +175,7 @@ class AES {
 
                         val decryptedData = cipher.doFinal(encryptedData)
 
-                        writeByteArrayToFile(context, decryptedData, fileName)
+                        FilesUtil.writeByteArrayToFile(context, decryptedData, fileName)
                     } catch (e: Exception) {
                         Log.e("Error : ", "Decryption")
                         e.printStackTrace()
