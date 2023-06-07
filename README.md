@@ -1,3 +1,6 @@
+# Note For Developers:
+- <b>Backned</b> Available at [Here](https://github.com/arinmodi/SecureShareBackend)
+
 <p align="center">
   <img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/2b525ed3-8192-4c21-a633-0dccffbc7d94" width=150>
 </p>
@@ -43,3 +46,44 @@ Search               |  Decrypt              |  Open
 <br>
 
 
+<br>
+<br>
+
+# Contributors Guidelines:
+
+### Installation:
+
+1. [Download and Install Android Studio][1]
+
+2. Fork the Git repository.
+    - Go to [Github repo](https://github.com/arinmodi/SecureFileTransfer) and click "Fork".
+
+3. Clone your fork to your local machine.
+    - Click "Clone" on your fork's Github page, and copy the Git URL. It should look like:<br>`git@github.com:yourname/SecureFileTransfer.git`
+
+4. Open the project in Android Studio.
+    - Open Android Studio
+    - In the menu bar, click `File` > `New` > `Project from Version Control...` > `Git`<br>
+    OR<br>
+    (if Quick Start menu open): `Get from Version Control` > `Git`
+    - Enter the Git URL you obtained in step 3.
+    - Specify a local directory you would like to save the project in and select `OK`.
+
+<br><br>
+
+### Contributing:
+
+1. Once project installed successfully in android studio, checkout to the new branch
+```
+git checkout -b feature/your-feature-name
+```
+ 
+ 2. Make neccessary changes and commit that changes
+```
+git commit -m "Add your commit message here"
+```
+ 
+ 3. Push the changes to forked repo
+```
+git push origin feature/your-feature-name
+```
