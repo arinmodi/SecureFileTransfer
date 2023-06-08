@@ -92,22 +92,20 @@ class AES {
          * @return File indicating the encrypted file
          */
         fun encryptFile(context: Context, filePath: Uri, secretKey: SecretKey, fileName: String,
-                        iv : ByteArray) : File? {
+                        iv : ByteArray, fileUtil : FilesUtil) : File? {
             try {
                 val lastIndexOfDot = fileName.lastIndexOf(".")
                 val extension = fileName.substring(lastIndexOfDot)
-                Log.e("Extension", extension)
                 return if (context.resources.getStringArray(R.array.nonMediaFiles)
                         .contains(extension)
                 ) {
-                    val fileData = FilesUtil.readFile(context, filePath)
+                    val fileData = fileUtil.readFile(context, filePath)
 
                     val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
                     cipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(iv))
 
                     val encryptedData = cipher.doFinal(fileData)
-
-                    FilesUtil.writeByteArrayToFile(context, encryptedData, fileName)
+                    fileUtil.writeByteArrayToFile(context, encryptedData, fileName)
                 } else if (context.resources.getStringArray(R.array.mediaFiles)
                         .contains(extension)
                 ) {
@@ -116,11 +114,9 @@ class AES {
                     null
                 }
             } catch(e : Exception) {
-                Log.e("Error : ", "Encryption Process")
                 e.printStackTrace()
                 return null
             }
-
         }
 
         /**
@@ -159,23 +155,21 @@ class AES {
          * @return File indicating the decrypted file
          */
         fun decryptFile(context:Context, url : String, secretKey: SecretKey, fileName: String,
-                        iv : ByteArray) : File? {
+                        iv : ByteArray, fileUtil: FilesUtil, networkCalls: NetworkCalls) : File? {
             val lastIndexOfDot = fileName.lastIndexOf(".")
             val extension = fileName.substring(lastIndexOfDot)
-            Log.e("Extension", extension)
             if (context.resources.getStringArray(R.array.nonMediaFiles).contains(extension)
                 || context.resources.getStringArray(R.array.mediaFiles).contains(extension)) {
-                val encryptedData = NetworkCalls.readRemoteFile(url)
+                val encryptedData = networkCalls.readRemoteFile(url)
 
                 return if (encryptedData != null) {
                     try {
-                        Log.e("File Name : ", fileName)
                         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
                         cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
 
                         val decryptedData = cipher.doFinal(encryptedData)
 
-                        FilesUtil.writeByteArrayToFile(context, decryptedData, fileName)
+                        fileUtil.writeByteArrayToFile(context, decryptedData, fileName)
                     } catch (e: Exception) {
                         Log.e("Error : ", "Decryption")
                         e.printStackTrace()
