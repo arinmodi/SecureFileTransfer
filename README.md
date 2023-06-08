@@ -15,6 +15,7 @@
   
 [![Generic badge](https://img.shields.io/badge/Platform-Android-blue.svg)](https://github.com/arinmodi/SecureFileTransfer)
 [![Generic badge](https://img.shields.io/badge/minSdkVersion-26-blue.svg)](https://github.com/arinmodi/SecureFileTransfer)
+[![Generic badge](https://img.shields.io/badge/Download-Google_Play-blue.svg)](https://play.google.com/store/apps/details?id=com.genz.secure_share)
   
 </div>
 
