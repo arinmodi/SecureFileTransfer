@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.genz.secure_share.algorithms.AES
 import com.genz.secure_share.utils.ButtonClickListener
+import com.genz.secure_share.utils.FilesUtil
 import com.genz.secure_share.utils.ProgressDialog
 import com.genz.secure_share.utils.ResponseDialog
 import com.genz.secure_share.viewmodels.EncryptionViewModel
@@ -277,12 +278,14 @@ class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener, Button
                     }
 
                     val randomIV = AES.generateRandomIV()
+                    val filesUtil = FilesUtil()
                     val encodedFile = AES.encryptFile(
                         context = requireContext(),
                         filePath = Uri.parse(path),
                         secretKey = secretKey,
                         fileName = bundle?.getString("name") ?: "",
-                        iv = randomIV
+                        iv = randomIV,
+                        fileUtil = filesUtil
                     )
 
                     if (encodedFile == null) {

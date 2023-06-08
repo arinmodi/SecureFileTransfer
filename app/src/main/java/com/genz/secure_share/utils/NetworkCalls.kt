@@ -10,38 +10,36 @@ import java.net.URL
  * read from remote file
  */
 class NetworkCalls {
-    companion object {
-        /**
-         * Read the data from remote file
-         *
-         * @url : url of the file to be read
-         * @return the content of the file in form of ByteArray
-         */
-        fun readRemoteFile(urlString: String): ByteArray? {
-            try {
-                val url = URL(urlString)
-                val connection = url.openConnection() as HttpURLConnection
+    /**
+     * Read the data from remote file
+     *
+     * @url : url of the file to be read
+     * @return the content of the file in form of ByteArray
+     */
+    fun readRemoteFile(urlString: String): ByteArray? {
+        try {
+            val url = URL(urlString)
+            val connection = url.openConnection() as HttpURLConnection
 
-                val inputStream = BufferedInputStream(connection.inputStream)
-                val byteArrayOutputStream = ByteArrayOutputStream()
+            val inputStream = BufferedInputStream(connection.inputStream)
+            val byteArrayOutputStream = ByteArrayOutputStream()
 
-                val buffer = ByteArray(1024)
-                var bytesRead: Int
+            val buffer = ByteArray(1024)
+            var bytesRead: Int
 
-                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                    byteArrayOutputStream.write(buffer, 0, bytesRead)
-                }
-
-                val encodedData = byteArrayOutputStream.toByteArray()
-                inputStream.close()
-                byteArrayOutputStream.close()
-
-                return encodedData
-            } catch (e: Exception) {
-                e.printStackTrace()
+            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                byteArrayOutputStream.write(buffer, 0, bytesRead)
             }
 
-            return null
+            val encodedData = byteArrayOutputStream.toByteArray()
+            inputStream.close()
+            byteArrayOutputStream.close()
+
+            return encodedData
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+
+        return null
     }
 }

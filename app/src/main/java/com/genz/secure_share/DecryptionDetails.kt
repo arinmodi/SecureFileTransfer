@@ -16,10 +16,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.genz.secure_share.algorithms.AES
-import com.genz.secure_share.utils.ButtonClickListener
-import com.genz.secure_share.utils.PermissionsUtil
-import com.genz.secure_share.utils.ProgressDialog
-import com.genz.secure_share.utils.ResponseDialog
+import com.genz.secure_share.utils.*
 import java.io.File
 import java.util.*
 import java.util.concurrent.Executors
@@ -222,6 +219,8 @@ class DecryptionDetails : AppCompatActivity(), OnItemSelectedListener, ButtonCli
                     val url = params[0]
                     val name = params[1]
                     val iv = params[2]
+                    val filesUtil = FilesUtil()
+                    val networkCalls = NetworkCalls()
 
                     // decrypt file
                     val file = AES.decryptFile(
@@ -229,7 +228,9 @@ class DecryptionDetails : AppCompatActivity(), OnItemSelectedListener, ButtonCli
                         url = url,
                         secretKey = secretKey,
                         fileName = name,
-                        iv = Base64.getDecoder().decode(iv)
+                        iv = Base64.getDecoder().decode(iv),
+                        fileUtil = filesUtil,
+                        networkCalls = networkCalls
                     )
 
                     handler.post {
