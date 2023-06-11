@@ -38,14 +38,13 @@ With Secure Share, you can securely share files with others while maintaining co
 
 Upload               |  Encrypt               | Share              
 :-------------------------:|:-------------------------:|:-------------------------:
-|<img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/5d3c290b-4400-4cd1-8712-8f071cc0d1fa" width = 250/>|<img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/03825e84-8784-4231-909b-cd6e20d8cad7" width = 250/>|<img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/8f79bca3-7d6f-4e1c-9e8c-29209bcafbb0" width = 250/>|
+|<img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/c981581d-573d-4458-903c-18b985bdce2b" width = 250/>|<img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/095387c2-cbd9-4ac3-9151-dc13b07f8d1a" width = 250/>|<img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/22ee64f2-af0c-4826-b335-72f670348814" width = 250/>|
 
-Search               |  Decrypt              |  Open       
-:-------------------------:|:-------------------------:|:-------------------------:
-|<img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/985e4bd9-aa1c-4a83-9fd3-ec4dacfb6f89" width = 250/>|<img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/c124d9b6-03ad-4a6d-9448-54ef96884649" width = 250/>|<img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/e3a7d2a3-142d-4f32-8743-e321f19a5911" width = 250/>
+Search               |  Decrypt     
+:-------------------------:|:-------------------------:
+|<img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/88274f7f-70ba-406a-9272-01b879e30302" width = 250/>|<img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/98a8bb21-a919-4636-9864-96fb79626da5" width = 250/>|
 
 <br>
-
 
 <br>
 <br>
