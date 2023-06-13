@@ -1,5 +1,5 @@
-# Note For Developers:
-- <b>Backned</b> Available at [Here](https://github.com/arinmodi/SecureShareBackend)
+# Note :
+- <b>Backned</b> Available at [Here](https://github.com/arinmodi/SecureShareBackend) Tech Stack : Node JS, Express JS, Firebase
 
 <p align="center">
   <img src="https://github.com/arinmodi/SecureFileTransfer/assets/61725413/2b525ed3-8192-4c21-a633-0dccffbc7d94" width=150>
