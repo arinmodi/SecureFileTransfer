@@ -100,7 +100,7 @@ class AESTest {
     }
 
     @Test
-    fun encryptFileNonMediaFiles() {
+    fun testEncryptFileNonMediaFiles() {
         val fileData = "This file data".toByteArray()
         val cipherA = Cipher.getInstance("AES/CBC/PKCS5Padding")
         cipherA.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(randomIv))
@@ -124,23 +124,23 @@ class AESTest {
     }
 
     @Test
-    fun encryptFileMediaFiles() {
-        val inputStream = AESTest::class.java.getResourceAsStream("/levi.png")
+    fun testEncryptFileMediaFiles() {
+        val inputStream = AESTest::class.java.getResourceAsStream("/levi.jpg")
 
         Mockito.doReturn(resources).`when`(context).resources
         Mockito.`when`(context.resources.getStringArray(R.array.nonMediaFiles))
             .thenReturn(arrayOf(".txt"))
         Mockito.`when`(context.resources.getStringArray(R.array.mediaFiles))
-            .thenReturn(arrayOf(".png"))
+            .thenReturn(arrayOf(".jpg"))
         Mockito.`when`(context.contentResolver).thenReturn(contentResolver)
         Mockito.`when`(context.contentResolver.openInputStream(filePath)).thenReturn(inputStream)
 
-        val res = AES.encryptFile(context, filePath, secretKey, "demo.png",
+        val res = AES.encryptFile(context, filePath, secretKey, "demo.jpg",
             randomIv, filesUtil)
 
         assertNotNull(res)
         if (res != null) {
-            assertEquals("demo.png", res.name)
+            assertEquals("demo.jpg", res.name)
         }
     }
 
