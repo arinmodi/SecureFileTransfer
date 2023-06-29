@@ -1,13 +1,11 @@
 package com.genz.secure_share.viewmodels
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.genz.secure_share.repostory.FileRepository
-import com.genz.secure_share.room.Database
 import com.genz.secure_share.utils.Resource
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
@@ -16,9 +14,7 @@ import okhttp3.RequestBody
 import org.json.JSONObject
 import java.io.File
 
-class EncryptionViewModel(application: Application) : AndroidViewModel(application) {
-    private var fileRepository: FileRepository? = null
-
+class EncryptionViewModel(private val fileRepository: FileRepository) : ViewModel() {
     private val fileMutable = MutableLiveData<File>()
     val file: LiveData<File>
         get() = fileMutable
@@ -30,7 +26,7 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
     val storeEvent : LiveData<MainEvent>
         get() = storeEventMutable
 
-    val allFiles : LiveData<List<com.genz.secure_share.room.File>>
+    val allFiles : LiveData<List<com.genz.secure_share.room.File>> = fileRepository.allFiles
 
     var algo = "AES"
     var pass = ""
@@ -40,12 +36,6 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
         class Success(val jsonObject: Any) : MainEvent()
         class Failure(val m: String) : MainEvent()
         object Loading : MainEvent()
-    }
-
-    init {
-        val dao = Database.getDatabase(application).getFileDao()
-        fileRepository = FileRepository(dao)
-        allFiles = fileRepository!!.allFiles
     }
 
     // upload image function
@@ -69,7 +59,7 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
 
         viewModelScope.launch {
 
-            when (val response = fileRepository?.uploadFile(profileImageBody, reqBody,
+            when (val response = fileRepository.uploadFile(profileImageBody, reqBody,
                 reqBody2)) {
                 is Resource.Success -> {
                     mainEventMutable.value = MainEvent.Success(response.data!!)
@@ -81,9 +71,6 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
                     storeEventMutable.value = MainEvent.Failure(response.message)
                     Log.e("Error : ", response.message)
                 }
-
-                // this will never happen
-                else -> {}
             }
         }
     }
@@ -107,7 +94,7 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
         )
 
         viewModelScope.launch {
-            when (val response = fileRepository?.insert(encryptedFile)) {
+            when (val response = fileRepository.insert(encryptedFile)) {
                 is Resource.Success -> {
                     storeEventMutable.value = MainEvent.Success("Success")
                 }
@@ -116,9 +103,6 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
                     storeEventMutable.value = MainEvent.Failure(response.message!!)
                     Log.e("Error : ", response.message)
                 }
-
-                // this will never happen
-                else -> {}
             }
 
         }
@@ -133,7 +117,7 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
         storeEventMutable.value = MainEvent.Loading
 
         viewModelScope.launch {
-            when (val result=fileRepository?.deleteFile(searchKey)) {
+            when (val result= fileRepository.deleteFile(searchKey)) {
                 is Resource.Success -> {
                     mainEventMutable.value = MainEvent.Success(result.data!!)
                     deleteInfo(file)
@@ -145,16 +129,13 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
                     storeEventMutable.value = MainEvent.Failure(result.message)
                     Log.e("Error : ", result.message)
                 }
-
-                // this will never happen
-                else -> {}
             }
         }
     }
 
     private fun deleteInfo(file : com.genz.secure_share.room.File) {
         viewModelScope.launch {
-            when (val response = fileRepository?.delete(file)) {
+            when (val response = fileRepository.delete(file)) {
                 is Resource.Success -> {
                     storeEventMutable.value = MainEvent.Success("Success")
                 }
@@ -163,9 +144,6 @@ class EncryptionViewModel(application: Application) : AndroidViewModel(applicati
                     storeEventMutable.value = MainEvent.Failure(response.message!!)
                     Log.e("Error : ", response.message)
                 }
-
-                // this will never happen
-                else -> {}
             }
 
         }
