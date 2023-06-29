@@ -13,8 +13,10 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.genz.secure_share.model.FileResponse
+import com.genz.secure_share.repostory.ViewRepository
 import com.genz.secure_share.utils.ProgressDialog
 import com.genz.secure_share.viewmodels.ViewFileViewModel
+import com.genz.secure_share.viewmodels.ViewFileViewModelFactory
 
 /**
  * Search the file
@@ -60,7 +62,8 @@ class ViewFile : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewFileViewModel = ViewFileViewModel(requireActivity().application)
+        viewFileViewModel = ViewFileViewModelFactory(ViewRepository())
+            .create(ViewFileViewModel::class.java)
 
         noInternet = NoInternet(requireActivity())
         progressDialog = ProgressDialog(requireActivity())

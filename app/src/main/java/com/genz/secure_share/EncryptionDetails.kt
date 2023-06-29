@@ -15,11 +15,14 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.genz.secure_share.algorithms.AES
+import com.genz.secure_share.repostory.FileRepository
+import com.genz.secure_share.room.Database
 import com.genz.secure_share.utils.ButtonClickListener
 import com.genz.secure_share.utils.FilesUtil
 import com.genz.secure_share.utils.ProgressDialog
 import com.genz.secure_share.utils.ResponseDialog
 import com.genz.secure_share.viewmodels.EncryptionViewModel
+import com.genz.secure_share.viewmodels.EncryptionViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -134,7 +137,10 @@ class EncryptionDetails : Fragment(), AdapterView.OnItemSelectedListener, Button
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        encryptionViewModel = EncryptionViewModel(requireActivity().application)
+        val dao = Database.getDatabase(requireActivity().application).getFileDao()
+        val fileRepository = FileRepository(dao)
+
+        encryptionViewModel = EncryptionViewModelFactory(fileRepository).create(EncryptionViewModel::class.java)
         bundle = arguments
 
         // expiry/date picker dialog

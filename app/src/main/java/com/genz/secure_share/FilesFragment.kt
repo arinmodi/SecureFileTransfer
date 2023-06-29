@@ -17,9 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.genz.secure_share.adapters.FileClickListener
 import com.genz.secure_share.adapters.FileAdapters
+import com.genz.secure_share.repostory.FileRepository
+import com.genz.secure_share.room.Database
 import com.genz.secure_share.room.File
 import com.genz.secure_share.utils.ProgressDialog
 import com.genz.secure_share.viewmodels.EncryptionViewModel
+import com.genz.secure_share.viewmodels.EncryptionViewModelFactory
 
 /**
  * List Of Files, User Can View, Delete and Copy Also
@@ -61,7 +64,10 @@ class FilesFragment : Fragment(), FileClickListener {
 
         val fileAdapters = FileAdapters(requireContext(), this)
 
-        fileViewModel = EncryptionViewModel(requireActivity().application)
+        val dao = Database.getDatabase(requireActivity().application).getFileDao()
+        val fileRepository = FileRepository(dao)
+
+        fileViewModel = EncryptionViewModelFactory(fileRepository).create(EncryptionViewModel::class.java)
 
         noInternet = NoInternet(requireActivity())
         progressDialog = ProgressDialog(requireActivity())
@@ -71,10 +77,6 @@ class FilesFragment : Fragment(), FileClickListener {
         listView.layoutManager = LinearLayoutManager(context)
 
         listView.adapter = fileAdapters
-        fileViewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
-        )[EncryptionViewModel::class.java]
 
         fileViewModel.allFiles.observe(viewLifecycleOwner) { list ->
             list?.let {
