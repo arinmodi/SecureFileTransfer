@@ -43,7 +43,7 @@ jobs:
            uses: actions/upload-artifact@v1
            with:
               name: my-apk
-              path: app/release
+              path: app/release/app-release.apk
 
          - name: Upload to s3
            uses: shallwefootball/s3-upload-action@master
