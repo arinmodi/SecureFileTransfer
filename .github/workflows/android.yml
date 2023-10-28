@@ -45,12 +45,14 @@ jobs:
               name: my-apk
               path: app/release
 
-         - name: Install Firebase CLI
-           run: npm install -g firebase-tools
+         - name: Set up AWS credentials
+           uses: aws-actions/configure-aws-credentials@v1
+           with:
+              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region: us-east-1
 
-         - name: Deploy to Firebase Storage
-           env:
-              FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-           run: |
-              firebase use --add Kodi App Jugad
-              firebase storage:upload app/release/app-release.apk --token "$FIREBASE_TOKEN"
+         - name: Upload Artifact to S3
+           uses: aws-actions/s3@v2
+           with:
+              args: cp ./app/release/app-release.apk s3://secure-share-apks/
