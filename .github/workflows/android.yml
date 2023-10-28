@@ -43,4 +43,4 @@ jobs:
            uses: actions/upload-artifact@v1
            with:
               name: apk
-              path: ${{steps.sign_aab.outputs.signedReleaseFile}
+              path: ${{steps.sign_aab.outputs.signedReleaseFile}}
