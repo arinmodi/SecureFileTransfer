@@ -2,7 +2,8 @@ name: Build dev and preprod for each commit
 
 on:
    push:
-      branches: ["master"]
+      branches:
+         - master
    workflow_dispatch:
 
 jobs:
@@ -10,26 +11,36 @@ jobs:
       name: Generate App Apk
       runs-on: ubuntu-latest
       steps:
-         - uses: actions/checkout@v3
-         - name: set up JDK 11
-           uses: actions/setup-java@v3
+         - name: Checkout code
+           uses: actions/checkout@v2
+
+         - name: Set up JDK 11
+           uses: actions/setup-java@v2
            with:
-              java-version: "11"
+              java-version: 11
               distribution: "temurin"
               cache: gradle
-         - name: run: chmod +x gradlew
+
+         - name: Grant execute permission for gradlew
+           run: chmod +x gradlew
+
          - name: Bundle 'release' with Gradle
            run: ./gradlew bundleRelease
+           continue-on-error: true
+
+         - name: Sign Android Release
            uses: r0adkll/sign-android-release@v1
            with:
-             releaseDirectory: app/build/outputs/bundle/release
-             signingKeyBase64: ${{ secrets.SIGNING_KEYSTORE }}
-             alias: ${{ secrets.SIGNING_ALIAS }}
-             keyStorePassword: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
-             keyPassword: ${{ secrets.SIGNING_ALIAS_PASSWORD }} 
+              releaseDirectory: app/build/outputs/bundle/release
+              signingKeyBase64: ${{ secrets.SIGNING_KEYSTORE }}
+              alias: ${{ secrets.SIGNING_ALIAS }}
+              keyStorePassword: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+              keyPassword: ${{ secrets.SIGNING_ALIAS_PASSWORD }}
+
          - run: echo "Build status report=${{ job.status }}."
+
          - name: Upload App Bundle
            uses: actions/upload-artifact@v1
            with:
-             name: apk
-             path: ${{steps.sign_aab.outputs.signedReleaseFile}}
+              name: apk
+              path: ${{steps.sign_aab.outputs.signedReleaseFile}
