@@ -42,5 +42,5 @@ jobs:
          - name: Upload App Bundle
            uses: actions/upload-artifact@v1
            with:
-              name: apk
-              path: ${{steps.sign_aab.outputs.signedReleaseFile}}
+              name: my-apk
+              path: app/build/outputs/
