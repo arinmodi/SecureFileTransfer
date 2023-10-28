@@ -25,7 +25,7 @@ jobs:
            run: chmod +x gradlew
 
          - name: Bundle 'release' with Gradle
-           run: ./gradlew bundleRelease
+           run: ./gradlew assembleRelease
            continue-on-error: true
 
          - name: Sign Android Release
