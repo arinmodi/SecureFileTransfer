@@ -45,15 +45,17 @@ jobs:
               name: my-apk
               path: app/release/app-release.apk
 
+         - name: List the directory contents
+           run: ls -R
+
          - name: Upload to s3
-           uses: wmanley/aws-s3-upload-action@v1
+           uses: shallwefootball/s3-upload-action@master
+           id: S3
            with:
-              aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-              aws_region: us-east-1
-              source: app/release/app-release.apk
-              bucket: secure-share-apks
-              destination: /secure-share-apks/${{ github.run_id }}/app-release.apk
+              aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws_bucket: secure-share-apks
+              source_dir: app/release/app-release.apk
 
          - name: Link To APK
-           run: echo "https://s3.amazonaws.com/secure-share-apks/${{ github.run_id }}/app-release.apk"
+           run: echo "https://s3.amazonaws.com/secure-share-apks/${{steps.S3.outputs.object_key}}"
