@@ -114,7 +114,7 @@ class FilesFragment : Fragment(), FileClickListener {
                 }
             }
 
-            // observe network state chnage
+            // observe network state change
             (requireActivity() as MainActivity).networkState.observe(viewLifecycleOwner) {
                 if (it) {
                     noInternet.dismiss()
