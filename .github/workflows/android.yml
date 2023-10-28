@@ -31,7 +31,7 @@ jobs:
          - name: Sign Android Release
            uses: r0adkll/sign-android-release@v1
            with:
-              releaseDirectory: app/build/outputs/apk/release
+              releaseDirectory: app/release
               signingKeyBase64: ${{ secrets.SIGNING_KEYSTORE }}
               alias: ${{ secrets.SIGNING_ALIAS }}
               keyStorePassword: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
@@ -39,7 +39,7 @@ jobs:
 
          - run: echo "Build status report=${{ job.status }}."
 
-         - name: Upload App Bundle
+         - name: Upload App Apk
            uses: actions/upload-artifact@v1
            with:
               name: my-apk
