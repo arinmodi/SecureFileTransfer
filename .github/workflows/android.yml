@@ -58,4 +58,4 @@ jobs:
               source_dir: ./app/release
 
          - name: Link To APK
-           run: echo "https://s3.amazonaws.com/secure-share-apks/${{steps.S3.outputs.object_key}}"
+           run: echo "https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/app-release.apk"
