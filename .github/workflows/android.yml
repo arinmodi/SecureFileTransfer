@@ -55,7 +55,7 @@ jobs:
               aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
               aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
               aws_bucket: secure-share-apks
-              source_dir: ./app/release/app-release.apk
+              source_dir: ./app/release
 
          - name: Link To APK
            run: echo "https://s3.amazonaws.com/secure-share-apks/${{steps.S3.outputs.object_key}}"
