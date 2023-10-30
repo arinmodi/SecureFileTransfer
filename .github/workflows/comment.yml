@@ -31,7 +31,8 @@ jobs:
 
          - name: Checkout PR branch
            uses: actions/checkout@v3
-           ref: ${{ steps.comment-branch.outputs.head_ref }}
+           with:
+              ref: ${{ steps.comment-branch.outputs.head_ref }}
 
          - name: Set up JDK 11
            uses: actions/setup-java@v2
