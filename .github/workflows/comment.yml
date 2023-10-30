@@ -8,7 +8,7 @@ on:
 jobs:
    run-action:
       if: ${{ github.event.issue.pull_request }}
-      if: startsWith(github.event.comment.body, "/build")
+      if: contains(github.event.comment.body, '/build')
       runs-on: ubuntu-latest
       steps:
          - name: Check for command
