@@ -98,4 +98,4 @@ jobs:
            with:
               slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
               slack-channel: app
-              slack-text: Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/$apk_file
+              slack-text: Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/${apk_file}
