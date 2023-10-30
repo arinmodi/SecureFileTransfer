@@ -13,6 +13,9 @@ import android.widget.ImageView
  * No Internet Dialog, Shows when there is no internet dialog
  */
 class NoInternet(private val activity: Activity) : Dialog(activity) {
+
+    constructor() : this(Activity()) {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_no_internet)
