@@ -15,7 +15,7 @@ jobs:
          - name: Check for command
            id: check-command
            run: |
-              comment_body=$(jg -r .comment.body $GITHUB_EVENT_PATH)
+              comment_body=$(jq -r .comment.body $GITHUB_EVENT_PATH)
               if [[ $comment_body =~ /build (.+)]]; then
                  param1="${BASH_REMATCH[1]}"
                  echo "Command found with parameters: $param1"
