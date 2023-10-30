@@ -51,7 +51,7 @@ jobs:
 
          - name: APK with desired varient
            run: |
-              ./gradlew $param1
+              ./gradlew :app:$param1
            shell: bash
 
          - name: Sign Android Release
