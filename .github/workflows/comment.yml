@@ -25,77 +25,10 @@ jobs:
               fi
            shell: bash
 
-         - name: Get PR branch
-           uses: xt0rted/pull-request-comment-branch@v1
-           id: comment-branch
-
-         - name: Checkout PR branch
-           uses: actions/checkout@v3
-           with:
-              ref: ${{ steps.comment-branch.outputs.head_ref }}
-
-         - name: Set up JDK 11
-           uses: actions/setup-java@v2
-           with:
-              java-version: 11
-              distribution: "temurin"
-              cache: gradle
-
-         - name: Grant execute permission for gradlew
-           run: chmod +x gradlew
-
-         - name: Param1
-           run: |
-              echo "Param1 : $param1"
-           shell: bash
-
-         - name: APK with desired varient
-           run: |
-              ./gradlew :app:$param1
-              apk=$(find ./app/release -name "*.apk" | grep -v -E "aligned|unsigned|signed")
-              apk_file=$(basename "$apk")
-              echo "apk_file=${apk_file}" >> "$GITHUB_ENV"
-              echo "file name = $apk_file"
-           shell: bash
-
-         - name: Sign Android Release
-           uses: r0adkll/sign-android-release@v1
-           with:
-              releaseDirectory: app/release
-              signingKeyBase64: ${{ secrets.SIGNING_KEYSTORE }}
-              alias: ${{ secrets.SIGNING_ALIAS }}
-              keyStorePassword: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
-              keyPassword: ${{ secrets.SIGNING_ALIAS_PASSWORD }}
-
-         - name: Create a copy
-           run: |
-               cp "app/release/$apk_file" "app/release/my-app.apk"
-           shell: bash      
-
-         - run: echo "Build status report=${{ job.status }}."
-
-         - name: Upload App Apk
-           uses: actions/upload-artifact@v1
-           with:
-              name: my-apk
-              path: app/release/my-app.apk
-
-         - name: Upload to s3
-           uses: shallwefootball/s3-upload-action@master
-           id: S3
-           with:
-              aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-              aws_bucket: secure-share-apks
-              source_dir: ./app/release
-
-         - name: Link To APK
-           run: echo "https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/$apk_file"
-
          - name: Send message to Slack API
            uses: archive/github-actions-slack@v2.0.0
            id: notify
            with:
               slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
               slack-channel: app
-              slack-text: Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/${apk_file}
+              slack-text: Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/${param1}
