@@ -1,17 +1,32 @@
-name: Build dev and preprod for each commit
+name: Build APK on comment
 
 on:
-   push:
-      branches:
-         - master
-   workflow_dispatch:
+   pull_request:
+      types:
+         - opened
+   issue_comment:
+      types:
+         - created
 
 jobs:
-   build:
-      name: Generate App Apk
+   run-action:
       runs-on: ubuntu-latest
       steps:
+         - name: Check for command
+           id: check-command
+           run: |
+              comment_body=$(jg -r .comment.body $GITHUB_EVENT_PATH)
+              if [[ $comment_body =~ /build (.+)]]; then
+                 param1="${BASH_REMATCH[1]}"
+                 echo "Command found with parameters: $param1"
+              else
+                 echo "Command Not Found"
+                 exit 1
+              fi
+           shell: bash
+
          - name: Checkout code
+           if: github.event_name == 'pull_request'
            uses: actions/checkout@v2
 
          - name: Set up JDK 11
@@ -24,9 +39,8 @@ jobs:
          - name: Grant execute permission for gradlew
            run: chmod +x gradlew
 
-         - name: Bundle 'release' with Gradle
-           run: ./gradlew assembleRelease
-           continue-on-error: true
+         - name: APK with desired varient
+           run: ./gradlew $param1
 
          - name: Sign Android Release
            uses: r0adkll/sign-android-release@v1
@@ -43,7 +57,7 @@ jobs:
            uses: actions/upload-artifact@v1
            with:
               name: my-apk
-              path: app/release/app-release.apk
+              path: app/release/
 
          - name: Upload to s3
            uses: shallwefootball/s3-upload-action@master
@@ -55,7 +69,7 @@ jobs:
               source_dir: ./app/release
 
          - name: Link To APK
-           run: echo "https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/app-release.apk"
+           run: echo "https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}"
 
          - name: Send message to Slack API
            uses: archive/github-actions-slack@v2.0.0
@@ -63,7 +77,4 @@ jobs:
            with:
               slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
               slack-channel: app
-              slack-text: Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/app-release.apk
-
-         - name: Result from "Send Message"
-           run: echo "The result was ${{ steps.notify.outputs.slack-result }}"
+              slack-text: Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}
