@@ -52,7 +52,8 @@ jobs:
          - name: APK with desired varient
            run: |
               ./gradlew :app:$param1
-              apk_file=$(find ./app/release -name "*.apk" | grep -v -E "aligned|unsigned|signed")
+              apk=$(find ./app/release -name "*.apk" | grep -v -E "aligned|unsigned|signed")
+              apk_file=$(basename "$apk")
               echo "apk_file=${apk_file}" >> "$GITHUB_ENV"
               echo "file name = $apk_file"
            shell: bash
