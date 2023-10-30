@@ -1,9 +1,6 @@
 name: Build APK on comment
 
 on:
-   pull_request:
-      types:
-         - opened
    issue_comment:
       types:
          - created
@@ -22,6 +19,7 @@ jobs:
                  echo "Command found with parameters: $param1"
               else
                  echo "Command Not Found"
+                 exit 78
               fi
            shell: bash
 
