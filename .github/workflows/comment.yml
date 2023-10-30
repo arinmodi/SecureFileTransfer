@@ -25,10 +25,16 @@ jobs:
               fi
            shell: bash
 
+          - name: Send message to Slack API
+            run: |
+               slack_message="Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/${{param1}}"
+               echo "::set-output name=slack_message::$slack_message"
+            id: notify 
+
          - name: Send message to Slack API
            uses: archive/github-actions-slack@v2.0.0
            id: notify
            with:
               slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
               slack-channel: app
-              slack-text: Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/$GITHUB_ENV.param1
+              slack-text: ${{steps.notify.outputs.slack_message}}
