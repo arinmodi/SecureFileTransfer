@@ -84,7 +84,7 @@ jobs:
               source_dir: ./app/release
 
          - name: Link To APK
-           run: echo "https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/${{apk_file}}"
+           run: echo "https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/$apk_file"
 
          - name: Send message to Slack API
            uses: archive/github-actions-slack@v2.0.0
@@ -92,4 +92,4 @@ jobs:
            with:
               slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
               slack-channel: app
-              slack-text: Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/${{apk_file}}
+              slack-text: Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/$apk_file
