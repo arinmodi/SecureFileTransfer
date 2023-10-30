@@ -25,8 +25,13 @@ jobs:
               fi
            shell: bash
 
-         - name: Checkout code
-           uses: actions/checkout@v2
+         - name: Get PR branch
+           uses: xt0rted/pull-request-comment-branch@v1
+           id: comment-branch
+
+         - name: Checkout PR branch
+           uses: actions/checkout@v3
+           ref: ${{ steps.comment-branch.outputs.head_ref }}
 
          - name: Set up JDK 11
            uses: actions/setup-java@v2
@@ -37,6 +42,9 @@ jobs:
 
          - name: Grant execute permission for gradlew
            run: chmod +x gradlew
+
+         - name: Param1
+           run: echo $param1
 
          - name: APK with desired varient
            run: ./gradlew $param1
