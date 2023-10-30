@@ -58,6 +58,11 @@ jobs:
               echo "file name = $apk_file"
            shell: bash
 
+         - name: Create a symbolic link
+           run: |
+              ln -s app/release/$apk_file app/release/my-app.apk
+           shell: bash  
+
          - name: Sign Android Release
            uses: r0adkll/sign-android-release@v1
            with:
@@ -73,7 +78,7 @@ jobs:
            uses: actions/upload-artifact@v1
            with:
               name: my-apk
-              path: app/release/$apk_file
+              path: app/release/my-app.apk
 
          - name: Upload to s3
            uses: shallwefootball/s3-upload-action@master
