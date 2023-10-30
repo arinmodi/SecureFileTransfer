@@ -17,12 +17,11 @@ jobs:
            run: |
               comment_body=$(jq -r .comment.body $GITHUB_EVENT_PATH)
               echo "Comment Body: $comment_body"
-              if [[ "$comment_body" =~ /build (.+) ]]; then
+              if [[ "$comment_body" =~ "/build "(.+) ]]; then
                  param1="${BASH_REMATCH[1]}"
                  echo "Command found with parameters: $param1"
               else
                  echo "Command Not Found"
-                 exit 1
               fi
            shell: bash
 
