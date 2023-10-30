@@ -67,9 +67,9 @@ jobs:
               keyStorePassword: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
               keyPassword: ${{ secrets.SIGNING_ALIAS_PASSWORD }}
 
-         - name: Create a symbolic link
+         - name: Create a copy
            run: |
-              ln -s app/release/$apk_file app/release/my-app.apk
+               cp "app/release/$apk_filename" "app/release/my-app.apk"
            shell: bash      
 
          - run: echo "Build status report=${{ job.status }}."
