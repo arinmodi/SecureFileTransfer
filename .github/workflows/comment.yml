@@ -58,11 +58,6 @@ jobs:
               echo "file name = $apk_file"
            shell: bash
 
-         - name: Create a symbolic link
-           run: |
-              ln -s app/release/$apk_file app/release/my-app.apk
-           shell: bash  
-
          - name: Sign Android Release
            uses: r0adkll/sign-android-release@v1
            with:
@@ -71,6 +66,11 @@ jobs:
               alias: ${{ secrets.SIGNING_ALIAS }}
               keyStorePassword: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
               keyPassword: ${{ secrets.SIGNING_ALIAS_PASSWORD }}
+
+         - name: Create a symbolic link
+           run: |
+              ln -s app/release/$apk_file app/release/my-app.apk
+           shell: bash      
 
          - run: echo "Build status report=${{ job.status }}."
 
