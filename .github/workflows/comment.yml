@@ -52,6 +52,9 @@ jobs:
          - name: APK with desired varient
            run: |
               ./gradlew :app:$param1
+              apk_file=$(find ./app/release -name "*.apk" | grep -v -E "aligned|unsigned|signed")
+              echo "apk_file=${apk_file}" >> "$GITHUB_ENV"
+              echo "file name = $apk_file"
            shell: bash
 
          - name: Sign Android Release
@@ -69,7 +72,7 @@ jobs:
            uses: actions/upload-artifact@v1
            with:
               name: my-apk
-              path: app/release/
+              path: app/release/$apk_file
 
          - name: Upload to s3
            uses: shallwefootball/s3-upload-action@master
@@ -81,7 +84,7 @@ jobs:
               source_dir: ./app/release
 
          - name: Link To APK
-           run: echo "https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}"
+           run: echo "https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/${{apk_file}}"
 
          - name: Send message to Slack API
            uses: archive/github-actions-slack@v2.0.0
@@ -89,4 +92,4 @@ jobs:
            with:
               slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
               slack-channel: app
-              slack-text: Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}
+              slack-text: Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/${{apk_file}}
