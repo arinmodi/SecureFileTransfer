@@ -26,7 +26,6 @@ jobs:
            shell: bash
 
          - name: Checkout code
-           if: github.event_name == 'pull_request'
            uses: actions/checkout@v2
 
          - name: Set up JDK 11
