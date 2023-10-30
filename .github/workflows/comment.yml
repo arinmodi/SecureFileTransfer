@@ -69,7 +69,7 @@ jobs:
 
          - name: Create a copy
            run: |
-               cp "app/release/$apk_filename" "app/release/my-app.apk"
+               cp "app/release/$apk_file" "app/release/my-app.apk"
            shell: bash      
 
          - run: echo "Build status report=${{ job.status }}."
