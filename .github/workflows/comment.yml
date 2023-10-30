@@ -45,10 +45,14 @@ jobs:
            run: chmod +x gradlew
 
          - name: Param1
-           run: echo $param1
+           run: |
+              echo "Param1 : $param1"
+           shell: bash
 
          - name: APK with desired varient
-           run: ./gradlew $param1
+           run: |
+              ./gradlew $param1
+           shell: bash
 
          - name: Sign Android Release
            uses: r0adkll/sign-android-release@v1
