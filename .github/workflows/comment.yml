@@ -78,7 +78,7 @@ jobs:
          - name: Upload App Apk
            uses: actions/upload-artifact@v1
            with:
-              name: my-apk
+              name: ${{steps.file.outputs.name}}
               path: app/release/${{steps.file.outputs.name}}
 
          - name: Upload to s3
@@ -95,7 +95,7 @@ jobs:
 
          - name: Build message for slack
            run: |
-              slack_message="Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/${{env.param1}}"
+              slack_message="Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/${{env.apk_file}}"
               echo "::set-output name=slack_message::$slack_message"
            id: notify
 
