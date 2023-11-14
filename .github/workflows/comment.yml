@@ -67,19 +67,21 @@ jobs:
               keyStorePassword: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
               keyPassword: ${{ secrets.SIGNING_ALIAS_PASSWORD }}
 
-         - name: Build a file name
+         - name: Build Outputs for the message
            run: |
               name="${{env.apk_file}}"
               path="${{env.apk_path}}"
+              VERSION_CODE=$(grep versionCode app/build.gradle | awk '{print $2}')
+              VERSION_NAME=$(grep versionName app/build.gradle | awk '{print $2}')
+              REPO_NAME=$(basename "${{ github.repository }}")
               echo "::set-output name=name::$name"
               echo "::set-output name=path::$path"
+              echo "::set-output name=vcode::$VERSION_CODE"
+              echo "::set-output name=vname::$VERSION_NAME"
+              echo "::set-output name=rname::$REPO_NAME"
            id: file
 
          - run: echo "Build status report=${{ job.status }}."
-
-         - name: Set Build Version Outputs
-           id: set_version
-           run: echo "VERSION_CODE=$(grep versionCode app/build.gradle | awk '{print $2}')" >> $GITHUB_ENV && echo "VERSION_NAME=$(grep versionName app/build.gradle | awk '{print $2}')" >> $GITHUB_ENV
 
          - name: Send message to Slack API
            uses: adrey/slack-file-upload-action@master
@@ -87,4 +89,4 @@ jobs:
               token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
               channel: app
               path: ${{steps.file.outputs.path}}
-              initial_comment: "$(basename ${{ github.repository }}) - ${{steps.file.outputs.name}} - ${{steps.set_version.outputs.VERSION_NAME}}"
+              initial_comment: "${{steps.file.outputs.rname}} - ${{steps.file.outputs.name}} - ${{steps.file.outputs.vname}}"
