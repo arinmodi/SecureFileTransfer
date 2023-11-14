@@ -87,6 +87,6 @@ jobs:
            uses: adrey/slack-file-upload-action@master
            with:
               token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-              channel: app
+              channel: demo
               path: ${{steps.file.outputs.path}}
               initial_comment: "${{steps.file.outputs.rname}} - ${{steps.file.outputs.name}} - ${{steps.file.outputs.vname}}"
