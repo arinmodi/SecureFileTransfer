@@ -53,6 +53,7 @@ jobs:
               ./gradlew :app:$param1
               apk=$(find ./app/release -name "*.apk" | grep -v -E "aligned|unsigned|signed")
               apk_file=$(basename "$apk")
+              echo "apk_path=${apk}" >> "$GITHUB_ENV"
               echo "apk_file=${apk_file}" >> "$GITHUB_ENV"
               echo "file name = $apk_file"
            shell: bash
@@ -69,38 +70,17 @@ jobs:
          - name: Build a file name
            run: |
               name="${{env.apk_file}}"
+              path="${{env.apk_path}}"
               echo "::set-output name=name::$name"
+              echo "::set-output name=path::$path"
            id: file
 
          - run: echo "Build status report=${{ job.status }}."
 
-         - name: Upload App Apk
-           uses: actions/upload-artifact@v1
-           with:
-              name: ${{steps.file.outputs.name}}
-              path: app/release/${{steps.file.outputs.name}}
-
-         - name: Upload to s3
-           uses: shallwefootball/s3-upload-action@master
-           id: S3
-           with:
-              aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-              aws_bucket: secure-share-apks
-              source_dir: ./app/release
-
-         - name: Link To APK
-           run: echo "https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/$apk_file"
-
-         - name: Build message for slack
-           run: |
-              slack_message="Your APK Link is https://secure-share-apks.s3.amazonaws.com/${{steps.S3.outputs.object_key}}/${{env.apk_file}}"
-              echo "::set-output name=slack_message::$slack_message"
-           id: notify
-
          - name: Send message to Slack API
-           uses: archive/github-actions-slack@v2.0.0
+           uses: adrey/slack-file-upload-action@master
            with:
-              slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
-              slack-channel: app
-              slack-text: ${{steps.notify.outputs.slack_message}}
+              token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+              channel: app
+              path: ${{steps.file.outputs.path}}
+              initial_comment: ${{steps.file.outputs.name}}
