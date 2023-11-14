@@ -77,10 +77,14 @@ jobs:
 
          - run: echo "Build status report=${{ job.status }}."
 
+         - name: Set Build Version Outputs
+           id: set_version
+           run: echo "VERSION_CODE=$(grep versionCode app/build.gradle | awk '{print $2}')" >> $GITHUB_ENV && echo "VERSION_NAME=$(grep versionName app/build.gradle | awk '{print $2}')" >> $GITHUB_ENV
+
          - name: Send message to Slack API
            uses: adrey/slack-file-upload-action@master
            with:
               token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
               channel: app
               path: ${{steps.file.outputs.path}}
-              initial_comment: ${{steps.file.outputs.name}}
+              initial_comment: "$(basename ${{ github.repository }}) - ${{steps.file.outputs.name}} - ${{steps.set_version.outputs.VERSION_NAME}}"
