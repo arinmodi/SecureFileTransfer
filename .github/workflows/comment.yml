@@ -51,15 +51,11 @@ jobs:
          - name: APK with desired varient
            run: |
               ./gradlew :app:$param1
-              apk=$(find ./app/release -name "*.apk" | grep -v -E "aligned|unsigned|signed")
-              apk_file=$(basename "$apk")
-              echo "apk_path=${apk}" >> "$GITHUB_ENV"
-              echo "apk_file=${apk_file}" >> "$GITHUB_ENV"
-              echo "file name = $apk_file"
            shell: bash
 
          - name: Sign Android Release
-           uses: r0adkll/sign-android-release@v1
+           uses: r0adkll/sign-android-release@v2
+           id: sign_app
            with:
               releaseDirectory: app/release
               signingKeyBase64: ${{ secrets.SIGNING_KEYSTORE }}
@@ -69,8 +65,8 @@ jobs:
 
          - name: Build Outputs for the message
            run: |
-              name="${{env.apk_file}}"
-              path="${{env.apk_path}}"
+              path=${{steps.sign_app.outputs.signedReleaseFile}}
+              name=$(basename "$path")
               VERSION_CODE=$(grep versionCode app/build.gradle | awk '{print $2}')
               VERSION_NAME=$(grep versionName app/build.gradle | awk '{print $2}')
               REPO_NAME=$(basename "${{ github.repository }}")
