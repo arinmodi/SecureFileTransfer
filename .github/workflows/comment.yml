@@ -54,7 +54,7 @@ jobs:
            shell: bash
 
          - name: Sign Android Release
-           uses: r0adkll/sign-android-release@v2
+           uses: r0adkll/sign-android-release@v1
            id: sign_app
            with:
               releaseDirectory: app/release
