@@ -10,7 +10,7 @@ import android.os.Bundle
 import android.widget.ImageView
 
 /**
- * No Internet Dialog, Shows when there is no internet
+ * No Internet Dialog, Shows when there is no internet dialog
  */
 class NoInternet(private val activity: Activity) : Dialog(activity) {
 
